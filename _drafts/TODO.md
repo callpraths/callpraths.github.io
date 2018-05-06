@@ -18,6 +18,9 @@ blogs. Interesting blogs, follow up books etc fall under this category.
 #### Economics sub-areas exploration.
 What will I apply to, in a year's time?
 
+### Design blog-scrub
+
+- [eyeo](http://eyeofestival.com/about/)
 
 ### Development studies
 This category contains my notes on Development Studies I.
