@@ -14,20 +14,32 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: Drops of Dew
+name: 'Prathmesh Prabhu'
+author: 'Prathmesh Prabhu'
 email: callpraths@gmail.com
 description: >-
   Prathmesh's plans, ingested ideas and arbitrary creations around economics,
   development studies and the rest.
-# baseurl: "/blog"
 url: "https://callpraths.github.io"
 # twitter_username: None
 github_username:  callpraths
 
+# blog logo
+logo: "/assets/images/df_logo.jpg"
+float_logo: true
+# blog cover
+cover: "/assets/images/cA4aKEIPQrerBnp1yGHv_IMG_9534-3-2.jpg"
+author_image: "/assets/images/author.jpg"
+
+paginate: 5
+
 # Build settings
 markdown: kramdown
-theme: minima
 plugins:
   - jekyll-feed
+gems:
+  - jemoji
+  - jekyll-paginate
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
