@@ -1,11 +1,9 @@
 ---
 layout: post
-title:  "Review: Desai & Potter, Chapter 1"
-date:   2018-05-05 18:30:42 +0000
+title: "The Third World, developing contries, the South, poor countries"
+date:   2018-09-30 
 categories: review development_studies
 ---
-
-# The Third World, developing contries, the South, poor countries
 
 Klaus Dodds opens their essay on the impact of Cold war on nations of the world
 with the assertion that words have power. The cold war was a period of struggle

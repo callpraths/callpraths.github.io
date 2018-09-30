@@ -1,0 +1,30 @@
+---
+layout: post
+title:  "Chomsky on role of education in democracy"
+date:   2018-09-30 
+categories: tidbits development_studies
+---
+
+In his essay [The Economics of Climate Change], Noam Chomsky says, while
+discussing essential strategies to bolster functioning democracies
+
+> A longer-term goal is to win the educational and cultural battle that's been
+> waged with such bitterness in the one-sided class war. It means tearing down
+> the enormous edifice of delusions about markets, free trade, and democracy
+> that's been assiduously constructed over many years, and to overcome the
+> marginalization and atomization of the public.
+
+This is indeed a valid and sufficient goal for a labour centric study of
+economics. To shed light on the critical underlying assumptions associated with
+inevitability and benignity of the larger Capitalistic structure. Instead, to
+focus on some exogenous goals for the world economic order and from their model
+the economically sound mechanisms that may be useful in guiding the invisible
+hand in a moral direction.
+
+The antidote to runaway Capitalism is unlikely to be Socialism (or any other
+-ism). Rather, economists can help understand the stakeholders and the stakes
+that drive the overall implicit and post-hoc system goals of the world economy
+and develop means to guide these goals in directions determined by humanitarian
+considerations.
+
+[The Economics of Climate Change]: https://www.jstor.org/stable/41555159
