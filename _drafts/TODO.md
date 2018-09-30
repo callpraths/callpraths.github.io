@@ -23,7 +23,7 @@ What will I apply to, in a year's time?
 - [eyeo](http://eyeofestival.com/about/)
 
 ### Development studies
-This category contains my notes on Development Studies I.
+This category contains my notes on Development Studies.
 
 ### Visualization projects for modern Indian macroeconomics
 This category contains visualization projects based on readings related to
