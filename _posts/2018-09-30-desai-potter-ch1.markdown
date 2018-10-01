@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "The Third World, developing contries, the South, poor countries"
+title: "Review: The Third World, developing contries, the South, poor countries"
 date:   2018-09-30 
 categories: review development_studies
 ---
