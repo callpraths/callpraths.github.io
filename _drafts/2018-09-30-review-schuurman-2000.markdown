@@ -5,102 +5,84 @@ date:   2018-09-30
 categories: review development_studies
 ---
 
----
-Notes
+XXX's essay categorizes the main criticism faced by development studies into three major themes and critically examines each of them elucidating the
+flaws in the theoretical framework of the field that opened it to each of these criticisms. He refutes some aspects of the criticism and internalizes
+some, discussing their impact on the future of the field. The three major streams of criticism can be labeled (a) the fallacy of the essentialization
+of the third world, (b) frustration with the notion of "progress", and (c) doubts about the continued role of state in the society. From the author's
+analysis, development studies survive the major brunt of these criticisms, but there are important insights to be gained from the critics for the
+approach taken by development studies research.
 
-* Paradigm shift in development studies in the 1980s: The impasse.
-* Three essential paradigms lost:
-  * Essentialisation of third world.
-    * No longer able to treat third world as homogeneous: Unlike economics these
-      guys weren't thinking of simplified models, or weren't trying to
-      understand how the simplifying assumptions affect their conclusions.
-    * This was brought down in part due to attacks by deconstructionists
-      (Focoult et al). But there are unintended consequences. Development
-      studies scholars started avoiding talking about the "inequality in the
-      third world" because it became taboo. Instead talked about "diversity in
-      the third world", but the latter concept was never well defined and had no
-      strong theoretical underpinnings. So, a simplified but well defined
-      concept was replaced by a touchy-feely compromise to make the attackers
-      happy. 
-      * My philosophy book [insert reference] has something to say about this --
-	post-deconstructionist philosophy must be a reflexive humanistic
-	philosophy, without wavering from the goals set forth pre
-	deconstructionism. What does it mean in this context?
-    * Author's response: 
-      This quote paraphrases the author's take
-      > There is only a very thin line between tolerance (in the sense of
-      > accepting diversity) and cultural relativism where we tolerate each
-      > other but have nothing to say to each other anymore.
-      * The essence of development studies is in the recognizing inequality and
-	working towards emancipation of groups of socially ostracized groups in
-	the South. Diversity of experiences does not nullify this goal.
-      * The recognition of diversity is important, but an active treatment of
-	the relevance of these difference for the given research question
-	matters.
-  * Faith in the notion of progress broken.
-    * Mostly, people gave up. Despite a few decades of incomplete efforts,
-      development efforts have led to worsening of the inequalities, so people
-      lost hope.
-    * There are various forms in which this changed the discourse.
-      * Some authors reject the need for developing the third world countries,
-	preferring the status quo, or some wooly notion of diversity to
-	progress. I think that these authors are guilty of blindness of one of
-	two kinds: either they are armchair scholars who are already comfortable
-	from the fruits of progress and find it easy to prefer non-development
-	for others, or they are people in under-developed countries who find the
-	status quo to their advantage.
-      * Other forms are a fatalistic view that the end is neigh and it is too
-	late for any meaningful progress and a euro-centric view that considers
-	the risk of the development project for the third world as too high --
-	due to the known high externalities of modernization -- not realizing
-	that citizens in the third world already live in a world with high risk
-	and the risk is a concern only for those in the developed world.
-    * Author's response:
-      * Unrealistic and convenient for researchers in the developed world to
-	just "help the poor forget the 'first world' needs".
-      * The idea that development of the world entails risk is specious:
-        * South lived with the same risk through colonisation. For the South,
-	  the risk is equal whether they modernize or not.
-	* It is only when the risk which was so far outsourced to South
-	  threatens the North that risk is factored into the calculations around
-	  cost-benefit of development.
-	* Once again, fatalistic. Humans got us here, they ought to get us
-	  ought.
-  * Third pillar: The central place of state in development.
-    * Political science, economics and cultural studies all developed
-      concomitant to the rise of nation-state and as such theories explicitly
-      intertwined with the notion of a powerful state actor.
-      * All three are seeing changes. Politics is moving to civil society,
-	economics is looking for behavioural and sociological roots, cultural
-	studies are focus on identity construction.
-    * State is disappearing politically (lack of sovereignty from above, focus
-      on local governance from below), economically (trans-national private
-      firms) and culturally (again both cosmopolitanism and ethnic, regional
-      dogma)
-    * Author's response:
-      * Effective local governments presuppose a phase of nation building and a
-	phase of welfare state. These ensure that the small local governments
-	have a big brother to protect them from large transnational concerns.
-	These are western ideals being injected into South, where they do mere
-	lip service. When local governments do blossom in the South, they fall
-	prey to competition for huge entities internationally.
-	* I can affirm this and elucidate with examples.
-      * About civil society. This paradigm needs more explication before it is
-	useful. Civil society originally was associated with seeding democracy
-	in an undemocratic society. But it consists of loosely held organisation
-	with not enough agency to replace the state.
+The first important paradigm underpinning most conversation in development studies was that of essentialization of the third world. The history of
+development studies is bound up with post-colonial interest of western scholars into newly independent states. As such, the rhetoric often bundled all
+the states of the South together and generalized the experience of the various peoples into that of the South as a whole. This essentialization of the
+South was attacked in the latter part of the twentieth century led by deconstructionist analysis. In direct response to the critique, development
+scholars shifted their focus from "inequality in the third world" to "diversity in the third world". This change of focus was a knee-jerk
+reaction and had unintended consequences for the field. Whereas the original subject of of discourse was well defined, if narrowly because of the
+lack of diversity attributed to the various nations, the new focus is an ill defined notion with vague theoretical underpinnings and unstated
+objectives.
 
-I will quote the final conclusion as is:
+This deconstructionist attack on ideals is all too common across the various branches of humanities. [Viktor E Frankl][philosophy-book] advises
+post-deconstructionist philosophers to avoid the trap of mere reaction to the deconstruction. Instead, he advises renewed commitment to the goals of
+the scholarly pursuit, because the goals are in a sense external to the theory being attacked. He then builds a reflexive approach to theorizing that
+internalizes the problems brought into light by the deconstructionists. The author, in the current article beautifully translates this advise to
+development studies.
 
-> The challenge for development studies is to re-establish is relevance to study
-> and to understand processes of exclusion, emancipation and development -- not
-> particularly by clinging to its once treasured paradigms but by incorporating
-> creatively the new Zeitgeist without giving up on its normative basis, i.e.,
-> the awareness that only with a universal morality of justice is there [sic] is
-> a future for humanity.
+<quote>
+There is only a very thin line between tolerance (in the sense of accepting diversity) and cultural relativism where we tolerate each other but have
+nothing to say to each other anymore.
+</quote>
 
-i.e., the humanist perspective is the central tenet of development studies which
-helps keep the light on.
-      
+The essence of development studies is in the recognition of inequality and a commitment to emancipation of socially ostracized groups in the South.
+Diversity of experiences does not nullify this goal. Recognition of diversity is important in that scholars must actively address the impact of
+diversity, or lack thereof, on the particular problems being studied and solutions being proposed. Even if cultures and particular problems across the
+Southern countries are myriad, the basic difficulty of economic and social inequality that development studies address is a shared experience that
+forms the bedrock of this scholarly labour.
 
-   
+The second central paradigm, rather an assumption, of the field was an ultimate faith in the viability of the development project. Early development
+literature is littered with optimistic estimates of the development trajectories for various newly independent countries. Through years of challenges
+faced in these development efforts and due to the ever changing landscape of the global political economy, these optimistic idealists became
+frustrated. Some scholars have shown obvious disappointment with the development project, slowly transitioning to the fatalistic view that it is too
+late or futile to attempt to develop the third world. A particularly strong strand in this view points to the cost and risk the development project
+entails to the whole globe. For example, various estimates of the impact of development of large developing economics to global warming are often used
+as a proof of the unsustainability of the development goals of these countries. This rhetoric is both incorrect and unfair. It is incorrect because
+people of the global South already face considerable risk in the status quo due to problems that in fact development attempts to address. The fallout
+of development onto the globe is unlikely to make matters worse for this already disenfranchised peoples. It is precisely the already developed nations
+that have most to lose from global problems like warmings oceans because it threatens to destabilize their orderly society. This euro-centric
+view is the reason that the rhetoric is unfair. It questions development of the South by pointing to global problems that were created in the first
+place due to the development of the North. A second strand of rhetoric turning away from a commitment to development is the one mentioned earlier
+which seeks to replace the focus on development with focus on diversity in the South. As discussed before the two concepts are orthogonal and must not
+be construed as competing theories. The common theme in these critiques is that they seek to help the poor "forget the treasures of the first world",
+either by hearkening to the problems the development of the South is likely to cause the already developed North, or by positioning the cultural
+diversity of the South as a replacement for stability and comfort. As such this critique of development studies was never an honest challenge.
+
+The final paradigm of development studies under attack is the central position accorded to the state in any development approach. Development studies
+was an amalgamation of ideas from economics, political science and cultural studies and all three of those fields held the state in a central
+position during the nascent phases of development studies. Thus it was natural for development efforts to take the role of state in development effort
+for granted.  Today, the authority of the state is being eroded due to globalization, both from the top as transnational financial flows and unlimited
+economic interdependence nibble away at the states' sovereignty, and from below as ethnic conflicts and regional disputes continue to simmer across the
+globe.  As such, economics, political science and cultural studies have all shifted focus away from a powerful central state. Of the three attacks on
+development studies research discussed, this last focuses less on the goals or theories of development and more on the particular paradigms and
+methods employed by the scholars. If this challenge is in fact significant, the response would include innovation in the field to provide new
+theories of development in the changing global landscape. Still, the demise of the primacy of state in development efforts is not a forgone
+conclusion. A common theme in many contemporary movements that aim to decentralize power is the drive to empower local governments and the reliance on
+civil society for effective governance. This rhetoric disregards the fundamental role of a stable state in the success of local governments. If these
+ideas of local governance are transplanted from stable Northern states to Southern countries with ineffective state, the local governments, and
+their citizens will be exposed to exploitation by large international powers like transnational private entities. Second, the concept of civil
+society needs more explication to be useful. Historically, civil society referred to a loose groups of people brought together for the promotion of
+democratic ideals in an undemocratic society. These groups were not vested with power for active change, nor are they theoretically well defined. The
+contemporary reference to civil society as an important actor in governance is idealistic and not uniformly applicable across nations in its current
+form.
+
+The final words of the essay are worth quoting as is
+
+<quote>
+The challenge for development studies is to re-establish is relevance to study and to understand processes of exclusion, emancipation and development
+-- not particularly by clinging to its once treasured paradigms but by incorporating creatively the new Zeitgeist without giving up on its normative
+basis, i.e., the awareness that only with a universal morality of justice is there [sic] is a future for humanity.
+</quote>
+
+This conclusion harkens back to Frankl's call to arms to fellow philosophers to make the humanist perspective the central tenet that keeps the goals
+of all efforts of philosophy lucid and unchallenged, and to learn from each misstep undaunted and innovate on the paradigms in a way that learns from
+the challenges.
+
+[philosophy-book]: https://avrl.catalogue.library.ns.ca/Record/698424/Cite]
