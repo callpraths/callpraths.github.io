@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Review: Paradigms lost, paradigms regained?"
-date: 2018-09-30
+title:  "Review: Paradigms lost, paradigms regained?"
+date:   2018-09-30
 categories: review development_studies
 ---
 
