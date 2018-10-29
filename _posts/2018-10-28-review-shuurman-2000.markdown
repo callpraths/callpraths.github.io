@@ -81,3 +81,6 @@ The final words of the essay are worth quoting as is
 This conclusion harkens back to Frankl's call to arms to fellow philosophers to make the humanist perspective the central tenet that keeps the goals
 of all efforts of philosophy lucid and unchallenged, and to learn from each misstep undaunted and innovate on the paradigms in a way that learns from
 the challenges.
+
+
+[philosophy-book]: http://www.worldcat.org/title/mans-search-for-meaning-an-introduction-to-logotherapy/oclc/27663911
