@@ -23,9 +23,9 @@ the South was attacked in the latter part of the twentieth century led by decons
 scholars shifted their focus from _inequality in the third world_ to _diversity in the third world_. This change of focus was a knee-jerk reaction and
 had unintended consequences for the field. Whereas the original subject of discourse was well defined, if narrowly because of the lack of diversity
 attributed to the various nations, the new focus is an ill-defined notion with vague theoretical underpinnings and unstated objectives.
-This deconstructionist attack on ideals is all too common across the various branches of humanities. [Viktor E Frankl][philosophy-book] advises
-post-deconstructionist philosophers to avoid the trap of mere reaction to the deconstruction. Instead, he advises renewed commitment to the goals of
-the scholarly pursuit, because the goals are in a sense external to the theory being attacked. He then builds a reflexive approach to theorizing that
+This deconstructionist attack on ideals is all too common across the various branches of humanities. Viktor E Frankl [advises post-deconstructionist
+philosophers][philosophy-book] to avoid the trap of mere reaction to the deconstruction. Instead, he advises renewed commitment to the goals of the
+scholarly pursuit, because the goals are in a sense external to the theory being attacked. He then builds a reflexive approach to theorizing that
 internalizes the problems brought into light by the deconstructionists. The author, in the current article beautifully translates this advice to
 development studies.
 
