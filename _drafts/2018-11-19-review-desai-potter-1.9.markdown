@@ -34,21 +34,29 @@ dimension has positive feedback on other dimensions.
 
 The three dimensions can be seen to be heirarchical in a different way -- in their moral content. Each dimension is loaded with increasing
 prescriptions for the morality of a "developed" society, and hence faces increasing counter-pressure from opposing voices that reject the implicit
-morality. The goal of meeting basic needs for life sustenance are in theory the most generally accepted, but even those have met with stiff opposition
-from neo-classical economics. Nations all over the world, including in underdeveloped nations, have increasingly adopted economic policies of economic
-liberalization that have led to worsening of income inequality. An extension of the neo-classical bent in global eco-political leadership is the
-de-facto failure of all affirmative action to bolster the voice of under-developed nations in international organizations like World Trade
-Organization and the United Nations. On the contrary, both the World Trade Organization and International Monetary Fund have been criticized for
-forcing economic and political restructuring of indebted underdeveloped nations that always contravenes these nations' sovereignty and has been shown
-to be detrimental to the nations' long term progress in some cases.
+morality. The goal of meeting basic needs for life sustenance are in theory the most generally accepted, and the United Nations have developed
+several indicators of nations' performance with regards to provision of these basic needs including the Human Development Index and the Human Poverty Index.
+But even those have met with stiff opposition from neo-classical economics. Nations all over the world, including in underdeveloped nations, have
+increasingly adopted economic policies of economic liberalization that have led to worsening of income inequality. An extension of the neo-classical
+bent in global eco-political leadership is the de-facto failure of all affirmative action to bolster the voice of under-developed nations in
+international organizations like World Trade Organization and the United Nations. On the contrary, both the World Trade Organization and International
+Monetary Fund have been criticized for forcing economic and political restructuring of indebted underdeveloped nations that always contravenes these
+nations' sovereignty and has been shown to be detrimental to the nations' long term progress in some cases.
 
 The final dimension of _freedom_ is the most controversial in terms of its moral prescriptions, and because this dimension characterizes the end-goal
 of the other dimensions, it opens up a heated debate about the general applicability of development efforts. Just like the early years of development
 studies, the field is dominated by Northern scholars, and as any discussion of this final dimension of the scope of the field demonstrates, is laden
-with moral judgements by these scholards that stem from their social context. The 
+with moral judgements by these scholards that stem from their social context. The importance accorded to personal liberty in development literature
+often stands in opposition to existing religious and traditional fabric in some eastern societies where individuality is subordinate to observance of
+social roles and maintenance of familial cohesion. The assumption that expanded choice is synonymous with social progress is also opposed to certain
+ethics that prescribe a simple life as the good life and proscribe material access. This final point is particularly problematic for Amartya Sen's
+operationalization of freedom-as-progress via an expansion of the fundamental utility theory in economics to encompass all the ways in which progress
+leads to peoples' ability to fulfil a wider range of desires. Even the undisputed ascedence of democracy as the liberating form of self governance is
+merely a preference often clothed as fact. A case in point is the difficulty faced when attemtping to settle on a universal definition for  _human
+rights_. Any such exercise is frought with the possibility of stalemate due to conflicting moral views, and an eventual definition is likely to be a
+compromise that is yet a victory of the most politically powerful groups on the international stage, viz., the Northern states.
 
-- Tie in human rights.
-- Discuss Sen in this context.
+Notwithstanding these reservations, 
 - Mention how the poor can't participate in these discussions -- they know what poverty is like.
 
 - Where to from here for us then? Take a moral stance, clearly state is as such. Then work for it unabashed. Do not try to hide the fact that it is a
