@@ -56,13 +56,19 @@ merely a preference often clothed as fact. A case in point is the difficulty fac
 rights_. Any such exercise is frought with the possibility of stalemate due to conflicting moral views, and an eventual definition is likely to be a
 compromise that is yet a victory of the most politically powerful groups on the international stage, viz., the Northern states.
 
-Notwithstanding these reservations, 
-- Mention how the poor can't participate in these discussions -- they know what poverty is like.
+Notwithstanding these reservations, poverty, deprevation and inequality are real circumstances with very real consequences for those affected. As XXX
+puts it, 
 
-- Where to from here for us then? Take a moral stance, clearly state is as such. Then work for it unabashed. Do not try to hide the fact that it is a
-  moral science, and do not push it down peoples' throats. Let them decide for themselves where they want their life to be. Be very *very* wary of
-playing the big brother. I'm looking at you, America.
+<quote>
+The rich may endure the uncertainty of deconstruction, but the poor very well know what poverty feels like.
+</quote>
 
+So where to from here for development scholars? Do we dither in our definitions and circumscribe our recommendations to the detriment of effectiveness
+of pro-development policy (like the defeat of reasonable economics to the new-liberal dogma), or do we risk imposition of a moral code unwanted in
+those we seek to _help_? In my opinion, pursuit of progress is a moral cause and an attempt at rendering the goals objective is doomed. We must accept
+the moral position we hold when we advocate for a certain kind of progress, stating our baises front-and-center. Further, we should strive to
+encourage participation of the _emancipated_ in defining what emancipation means for them, but within the moral standards alerady chosen. Finally, the
+tools and measurements employed can and should be entirely scientific, lending credibility to our achievements towards progress.
 
 This article is a response to two essays in [The Companion to Development Studies][development-textbook] -- _Development and economic growth_ by A. P.
 Thirlwall and _development and social welfare_ by Jeniffer A. Elliott.
