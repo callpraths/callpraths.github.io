@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "development studies as a moral stance"
+title:  "Review: Development studies as a moral stance"
 date:   2018-11-21
 categories: review development_studies
 ---
