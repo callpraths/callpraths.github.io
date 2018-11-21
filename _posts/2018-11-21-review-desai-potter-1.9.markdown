@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "development studies as a moral stance"
-date:   2018-11-19
+date:   2018-11-21
 categories: review development_studies
 ---
 
@@ -13,17 +13,17 @@ the policy recommendations that stem from development studies theory.
 The original focus of development studies was restricted to the economic development of hitherto underdeveloped regions of the world. Other aspects of
 human society like civil and political rights, income distribution and its relation to social structures, and environment externalities from
 development were of no concern to the policy recommendations advanced by the scholars. The view has changed radically since the late 20th-century
-impasse in development studies research. Goulet [insert-link] summarizes the newly expanded scope of development studies by invoking three basic needs
-that all development projects must aspire to meet for the population of the target regions -- _life sustenance_, _self-esteem_, and _freedom_. The
-first, _life sustenance_ is an extension of the economic development centered view of original scholars with a restatement that highlights the
-provision of basic physical needs of the population -- food security, shelter and health services -- as well as the support of human capital growth
-via primary education and development of employment opportunities. In concrete terms, this implies a renewed interest in ensuring some fairness in
-income distribution along with the overall economic growth of the nation. The second basic need of _self-esteem_ applies to the nation as a whole and
-aims to provide a voice for the people of the nation on the increasingly integrated global forum. Concerns in this area include protection from
-exploitation by other nations, prevention of slavery, human trafficking and colonialism in both its evident and implicit forms, and creation of
-opportunity for true national growth in the context of global trade relations. The final basic need of _freedom_, returning to the personal realm,
-hints at the fruits of development that the promised upshot of the dimensions discussed so far -- the expansion of personal freedom defined as an
-expansion of choice for the general population in the material, social and political arenas.
+impasse in development studies research. Goulet summarizes the newly expanded scope of development studies by invoking three basic needs that all
+development projects must aspire to meet for the population of the target regions -- _life sustenance_, _self-esteem_, and _freedom_. The first, _life
+sustenance_ is an extension of the economic development centered view of original scholars with a restatement that highlights the provision of basic
+physical needs of the population -- food security, shelter and health services -- as well as the support of human capital growth via primary education
+and development of employment opportunities. In concrete terms, this implies a renewed interest in ensuring some fairness in income distribution along
+with the overall economic growth of the nation. The second basic need of _self-esteem_ applies to the nation as a whole and aims to provide a voice
+for the people of the nation on the increasingly integrated global forum. Concerns in this area include protection from exploitation by other nations,
+prevention of slavery, human trafficking and colonialism in both its evident and implicit forms, and creation of opportunity for true national growth
+in the context of global trade relations. The final basic need of _freedom_, returning to the personal realm, hints at the fruits of development that
+the promised upshot of the dimensions discussed so far -- the expansion of personal freedom defined as an expansion of choice for the general
+population in the material, social and political arenas.
 
 The three categories of concerns mentioned above can be seen to be layered in a way. Basic life sustenance needs must be met before a stable nation
 can exist and the concerns of a level playing ground on the international field arise. Similarly, basic needs and space for national growth are
@@ -58,16 +58,14 @@ liberating form of self-governance is merely a preference often clothed as fact.
 a universal definition for _human rights_. Any such exercise is fraught with the risk of a stalemate due to conflicting moral views, and an eventual
 definition is likely a compromise that is yet a victory of the most politically vocal groups on the international stage, viz., the Northern states.
 
-Notwithstanding these reservations, poverty, and inequality are real circumstances with dire consequences for those affected. As XXX puts it,
-
-<quote> The rich may endure the uncertainty of deconstruction, but the poor very well know what poverty feels like.  </quote>
-
-So where to from here for development scholars? Do we dither in our definitions and circumscribe our recommendations to the detriment of
-pro-development politics (like the defeat of reasonable economics to the neo-liberal dogma), or do we risk the imposition of a moral code unwanted in
-those we seek to help? In my opinion, the pursuit of progress is a moral cause and an attempt at rendering the goals objective is doomed. We must
-accept the moral position we hold when we advocate for a certain kind of progress, revealing our biases front-and-center. Further, we should strive to
-encourage participation of the emancipated in defining what emancipation means for them, but within the moral standards already chosen. Finally, the
-tools and measurements employed can and should continue to be scientific, lending credibility to our achievements towards progress.
+Notwithstanding these reservations, poverty, and inequality are real circumstances with dire consequences for those affected. The rich may endure the
+uncertainty of deconstruction, but the poor very well know what poverty feels like. So where to from here for development scholars? Do we dither in
+our definitions and circumscribe our recommendations to the detriment of pro-development politics (like the defeat of reasonable economics to the
+neo-liberal dogma), or do we risk the imposition of a moral code unwanted in those we seek to help? In my opinion, the pursuit of progress is a moral
+cause and an attempt at rendering the goals objective is doomed. We must accept the moral position we hold when we advocate for a certain kind of
+progress, revealing our biases front-and-center. Further, we should strive to encourage participation of the emancipated in defining what emancipation
+means for them, but within the moral standards already chosen. Finally, the tools and measurements employed can and should continue to be scientific,
+lending credibility to our achievements towards progress.
 
 This article is a response to two essays in [The Companion to Development Studies][development-textbook] -- _Development and economic growth_ by A. P.
 Thirlwall and _development and social welfare_ by Jeniffer A. Elliott.
