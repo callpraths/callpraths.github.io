@@ -36,12 +36,12 @@ protectiveness and possessiveness for my child is strong in me and I will find w
 
 ### Live my life through him, or sacrifice my happiness for him
 
-This one is a particularly insidious one, given my background. I will build happiness with him, and include him in all I want for myself. I can not be
+This is a particularly insidious one, given my background. I will build happiness with him, and include him in all I want for myself. I can not be
 happy in the present through self-sacrifice and the expectations that arise from it will cause bitterness in later days.
 
 ### Have expectations from him once he is an adult
 
 Kids take, you give. Period.
 
-Expectations arise most where the love is strongest. I will watch out to create the distance between my desires and his independence that will let us
-be good friends unto the end of my days.
+Expectations arise most where the love is strongest. I will to create the distance between my desires and his independence that will let us be good
+friends unto the end of my days.
