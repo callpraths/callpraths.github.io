@@ -43,5 +43,5 @@ happy in the present through self-sacrifice and the expectations that arise from
 
 Kids take, you give. Period.
 
-Expectations arise most where the love is strongest. I will to create the distance between my desires and his independence that will let us be good
+Expectations arise most where the love is strongest. I will create the distance between my desires and his independence that will let us be good
 friends unto the end of my days.
