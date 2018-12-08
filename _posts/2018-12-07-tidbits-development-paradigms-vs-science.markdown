@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Solitude and Company"
-date:   2018-05-05 18:30:42 +0000
+title:  "development studies ideologies"
+date:   2018-12-07
 categories: tidbits development_studies
 ---
 
