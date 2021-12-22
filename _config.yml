@@ -25,11 +25,10 @@ url: "https://callpraths.github.io"
 github_username:  callpraths
 
 # blog logo
-logo: "/assets/images/df_logo.jpg"
+logo: "/assets/images/github-avatar.svg"
 float_logo: true
 # blog cover
 cover: "/assets/images/cA4aKEIPQrerBnp1yGHv_IMG_9534-3-2.jpg"
-author_image: "/assets/images/author.jpg"
 
 paginate: 5
 
