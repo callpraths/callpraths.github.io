@@ -35,7 +35,7 @@ paginate: 5
 
 # Build settings
 markdown: kramdown
-gems:
+plugins:
   - jemoji
   - jekyll-paginate
 
