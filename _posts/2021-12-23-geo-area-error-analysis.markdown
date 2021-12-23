@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Error from floating-point arithmetic in area computations on the Earth’s surface"
-date:   2021-12-22 00:00:00 +0000
+date:   2021-12-23 00:00:00 +0000
 categories: geoscience
 usemathjax: true
 ---
