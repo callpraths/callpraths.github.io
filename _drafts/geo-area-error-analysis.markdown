@@ -64,7 +64,7 @@ Vertices in the translated polygon have coordinates with absolute values compara
 I quantified this loss of precision by implementing the naive algorithm for area computation described earlier and comparing the results with those from geo. First, I compared the area for a polygon surrounding the origin. As expected, the area computed by the naive algorithm matched the one from geo (area: $$\approx 293$$, error in naive computation (relative to geo) $$\lt 10^{-14}\%$$). Next, I translated the polygon away from the origin in different directions in the first quadrant –- along the x-axis (translation angle $$0$$), along the y-axis (translation angle $$\frac{\pi}{2}$$), and in three directions between those extremes (translation angles of $$\frac{\pi}{8}$$, $$\frac{\pi}{4}$$ and $$\frac{3\pi}{8}$$ from the x-axis). The following graph shows the error in naive area computation (relative to geo) as the polygon shifts away from the origin in those directions:
 
 {:refdef: style="text-align: center;"}
-![](/assets/article_images/naive_area_error.png)
+![](/assets/article_images/naive_area_error.svg)
 {: refdef}
 
 The graph clearly demonstrates the loss of precision I anticipated earlier – the error starts out small and grows as the polygon shifts away from the origin. But the graph holds an additional insight – the error varies widely by the angle of translation – while it stays $$\lt 10\%$$ for translations along the x- or y-axes, it fluctuates between $$100\%$$ and $$10^{16}\%$$ in the other directions! An error of $$10\%$$ is arguably bad, depending on the application, but an error over $$100\%$$ surely makes the entire computation meaningless. The large difference in the magnitude of the error along one of the axes compared to intermediate angles highlights the effect of the multiplication in the area formula – the loss of precision in the computation of $$x_1y_2$$ is much higher when $$x_1$$ and $$y_2$$ are _both_ large.
@@ -72,7 +72,7 @@ The graph clearly demonstrates the loss of precision I anticipated earlier – t
 I close by noting a particular quirk of my experimental setup. Above, I compared the area computed via the naive algorithm with that computed by geo as the polygon is translated. But the area computed by geo as the polygon is translated does not stay constant either. The following graph shows the error in the area computed by geo, relative to the original area of the polygon:
 
 {:refdef: style="text-align: center;"}
-![](/assets/article_images/geo_area_error.png)
+![](/assets/article_images/geo_area_error.svg)
 {: refdef}
 
 Once again, the error grows as the polygon shifts away from the origin. But the error is relatively the same in all angles of translation and approaches $$100\%$$ as the polygon is translated by $$\approx 10^{17}$$. This error is a result of an unavoidable loss in precision in specifying the vertices of the polygon as it is translated – as the absolute numerical value of a cartesian coordinate grows, floating-point representation of the number drifts away from the actual value. Effectively, the polygon morphs as it shifts. Eventually, at $$\approx 10^{17}$$, the floating-point representations of the vertices are so imprecise that it results in a polygon with the area $$0$$!
