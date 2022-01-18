@@ -1,0 +1,19 @@
+table.comparison-table th, table.comparison-table td {
+    /* Accent green */
+    border: 1px solid rgb(224, 251, 241);
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+table.comparison-table {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+
+    table-layout: fixed;
+}
+table.comparison-table th {
+    /* Same as body's background color */
+    color: #181818;
+    /* Accent green, but with alpha */
+    background-color: rgb(224, 251, 241, 0.5);
+}

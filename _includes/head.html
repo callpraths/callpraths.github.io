@@ -54,4 +54,11 @@
     src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
   {% endif %}
 
+  <!-- for post specific stylesheets -->
+  <style>
+  {% if page.style %}
+    {% include css/{{ page.style }}.css %}
+  {% endif %}
+  </style>
+
 </head>
