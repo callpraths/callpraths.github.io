@@ -17,3 +17,9 @@ table.comparison-table th {
     /* Accent green, but with alpha */
     background-color: rgb(224, 251, 241, 0.5);
 }
+.hl-available {
+    background-color: #4060428A;
+}
+.hl-not-available {
+    background-color: #6048408A;
+}
