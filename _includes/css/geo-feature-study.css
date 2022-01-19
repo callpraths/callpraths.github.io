@@ -1,25 +1,26 @@
-table.comparison-table th, table.comparison-table td {
-    /* Accent green */
-    border: 1px solid rgb(224, 251, 241);
-    border-collapse: collapse;
-    border-spacing: 0px;
-}
-table.comparison-table {
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-
-    table-layout: fixed;
-}
-table.comparison-table th {
-    /* Same as body's background color */
-    color: #181818;
-    /* Accent green, but with alpha */
-    background-color: rgb(224, 251, 241, 0.5);
-}
 .hl-available {
     background-color: #4060428A;
 }
 .hl-not-available {
     background-color: #6048408A;
+}
+table.one-comparison {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    table-layout: fixed;
+    margin-bottom: 0.5rem;
+}
+table.one-comparison th {
+    /* Same as body's background color */
+    color: #181818;
+    font-weight: bolder;
+    background-color: #AAAAAA;
+    text-align: start;
+    padding-left: 1rem;
+    width: 8rem;
+    border-radius: 0.2rem;
+}
+table.one-comparison td {
+    padding-left: 1rem;
 }

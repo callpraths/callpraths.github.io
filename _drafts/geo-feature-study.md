@@ -69,22 +69,150 @@ and _geos_.
 Next, I map the functions available in _geo_ to those from _geos_ and _PostGIS_.
 
 
-<table class="comparison-table">
-  <col style="width:15%">
-  <col style="width:15%">
-  <col style="width:15%">
-  <col style="width:55%">
-  <tr>
-    <th>geo</th>
-    <th>geos</th>
-    <th>PostGIS</th>
-    <th>Description / Remarks</th>
-  </tr>
-  <tr>
-    <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/area/trait.Area.html">[algorithm::area::Area]</a></td>
-    <td>1</td>
-    <td>1</td>
-    <td>1</td>
-</tr>
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Compute area of a planar polygon. <br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_Area.html">ST_Area</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/area/trait.Area.html">algorithm::area::Area</a></td>
+ </tr>
+ <tr>
+   <th>geos</th>
+   <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.area">Geom::area</a></td>
+ </tr>
 </table>
 
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Compute the azimuthal angle between two geometries.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_Azimuth.html">ST_Azimuth</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/bearing/trait.Bearing.html">algorithm::bearing::Bearing</a></td>
+ </tr>
+ <tr>
+   <th>geos</th>
+   <td><span class="hl-not-available">Not available</span></td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Find a point on a geometry closest to another geometry.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_ClosestPoint.html">ST_ClosestPoint</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/closest_point/trait.ClosestPoint.html">algorithm::closest_point::ClosestPoint</a></td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.nearest_points">Geom::nearest_points</a></td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Find the Euclidean distance between geometries. All three packages have support for optimized computation of the
+       distance using an index. Additionally, PostGIS provides
+       <a href= "https://postgis.net/docs/manual-3.2/reference.html#operators-distance">operator syntax</a> based on this function.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_Distance.html">ST_Distance</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/euclidean_distance/trait.EuclideanDistance.html">algorithm::euclidean_distance::EuclideanDistance</a>,
+       <a href="https://docs.rs/geo/0.18.0/geo/algorithm/euclidean_distance/fn.nearest_neighbour_distance.html">algorithm::euclidean_distance::nearest_neighbour_distance</a></td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.distance">Geom::distance</a>,
+        <a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.distance_indexed">Geom::distance_indexed</a></td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Compute the Cartesian length of a geometry. Only applicable to lines and multi-lines.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_Length.html">ST_Length</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/euclidean_length/trait.EuclideanLength.html">algorithm::euclidean_length::EuclideanLength</a></td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.length">Geom::length</a></td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Compute a <a href="https://en.wikipedia.org/wiki/Fr%C3%A9chet_distance">measure of similarity of two geometries</a>, due to Maurice Frechet.
+       PostGIS and geos provide a way to densify the geometries beforehand, which can improve the distance estimate.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_FrechetDistance.html">ST_FrechetDistance</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/frechet_distance/trait.FrechetDistance.html">algorithm::frechet_distance::FrechetDistance</a></td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.frechet_distance">Geom::frechet_distance</a>,
+        <a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.frechet_distance_densify">Geom::frechet_distance_densify</a></td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Compute the great-arc distance between two geometries on a geodetic model. geo provides two algorithms for this computation based on a spheroidal model of the earth. PostGIS provides one algorithm each based on spherical and spheroidal models.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_DistanceSphere.html">ST_DistanceSphere</a>,
+       <a href="https://postgis.net/docs/manual-3.2/ST_Distance_Spheroid.html">ST_DistanceSpheroid</a>
+       (based on <a href="https://en.wikipedia.org/wiki/Vincenty%27s_formulae">Vincenty's method</a>)
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/vincenty_distance/trait.VincentyDistance.html">algorithm::vincenty_distance::VincentyDistance</a>,
+       <a href="https://docs.rs/geo/0.18.0/geo/algorithm/geodesic_distance/trait.GeodesicDistance.html">algorithm::geodesic_distance::GeodesicDistance</a> (Improvement over Vincenty's method)</td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><span class="hl-not-available">Not available</span></td>
+ </tr>
+</table>
+
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Compute the great-arc length of a geometry. Implementations follow great-arc distance computations closely.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_Length_Spheroid.html">ST_LengthSpheroid</a>
+       (based on <a href="https://en.wikipedia.org/wiki/Vincenty%27s_formulae">Vincenty's method</a>)
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/vincenty_length/trait.VincentyLength.html">algorithm::vincenty_length::VincentyLength</a>,
+       <a href="https://docs.rs/geo/0.18.0/geo/algorithm/geodesic_length/trait.GeodesicLength.html">algorithm::geodesic_length::GeodesicLength</a> (Improvement over Vincenty's method)</td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><span class="hl-not-available">Not available</span></td>
+ </tr>
+</table>
