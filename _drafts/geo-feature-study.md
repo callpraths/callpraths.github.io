@@ -68,7 +68,6 @@ and _geos_.
 
 Next, I map the functions available in _geo_ to those from _geos_ and _PostGIS_.
 
-
 <table class="one-comparison">
  <tr>
    <th>description</th>
@@ -197,7 +196,6 @@ Next, I map the functions available in _geo_ to those from _geos_ and _PostGIS_.
  </tr>
 </table>
 
-
 <table class="one-comparison">
  <tr>
    <th>description</th>
@@ -209,10 +207,170 @@ Next, I map the functions available in _geo_ to those from _geos_ and _PostGIS_.
  <tr>
    <th>geo</th>
    <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/vincenty_length/trait.VincentyLength.html">algorithm::vincenty_length::VincentyLength</a>,
-       <a href="https://docs.rs/geo/0.18.0/geo/algorithm/geodesic_length/trait.GeodesicLength.html">algorithm::geodesic_length::GeodesicLength</a> (Improvement over Vincenty's method)</td>
+       <a href="https://docs.rs/geo/0.18.0/geo/algorithm/geodesic_length/trait.GeodesicLength.html">algorithm::geodesic_length::GeodesicLength</a>
+       (Improvement over Vincenty's method)</td>
  </tr>
  <tr>
    <th>geos</th>
     <td><span class="hl-not-available">Not available</span></td>
+ </tr>
+</table>
+
+
+## Geometry Accessors
+
+_geo_ effectively provides 15 of the 42 functions in this
+[section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#Geometry_Accessors) . While
+there is a large gap in the feature set in this section, many of the missing functions have easy and idiomatic
+implementations using available accessors and iterators. Also, some of the functions are not applicable to _geo_ because
+of limitations of the types of geometries supported.
+
+Missing features includes:
+
+- Functions related to 3D and 4D geometries. The extra coordinates are used to specify the height (z) and/or a
+  measure (m) at the given point. These are not applicable to _geo_ as _geo_ only supports 2D geometries. _geos_
+  supports 3D geometries (with a z-dimension) but has no notion of a measure.
+- Functions related to curves (with non-linear interpolation between points) and surfaces (3D non-linear surfaces).
+  These are not applicable to _geo_ and _geos_ as neither library implements non-linear geometries.
+- A method to obtain the amount of memory consumed by a geometry. Not available in _geo_ and _geos_.
+
+Beyond these, _PostGIS_ provides some convenience functions that are easy to implement using those available in _geo_
+and _geos_.
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Compute the bounding rectangle for a geometry.
+       Additionally, PostGIS has an
+       <a href="https://postgis.net/docs/manual-3.2/reference.html#operators-bbox">algebra</a> relating the bounding
+       rectangles of two geometries.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_Envelope.html">ST_Envelope</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/bounding_rect/trait.BoundingRect.html">algorithm::bounding_rect::BoundingRect</a></td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.envelope">Geom::envelope</a></td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Compute the dimensionality of a geometry. Only geo correctly handles collinear points.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_Dimension.html">ST_Dimension</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/dimensions/trait.HasDimensions.html">algorithm::dimensions::HasDimensions</a></td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.get_num_dimensions">Geom::get_num_dimensions</a></td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Access specific points on a line or multi-line<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_NumPoints.html">ST_NumPoints</a>,
+       <a href="https://postgis.net/docs/manual-3.2/ST_PointN.html">ST_PointN</a>,
+       <a href="https://postgis.net/docs/manual-3.2/ST_StartPoint.html">ST_StartPoint</a>,
+       <a href="https://postgis.net/docs/manual-3.2/ST_EndPoint.html">ST_EndPoint</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/struct.LineString.html#method.points_iter">LineString::points_iter</a>,
+   <a href="https://docs.rs/geo/0.18.0/geo/struct.Line.html#method.start_point">Line::start_point</a>,
+   <a href="https://docs.rs/geo/0.18.0/geo/struct.Line.html#method.end_point">Line::end_point</a> etc.
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.get_num_points">Geom::get_num_points</a>,
+    <a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.get_point_n">Geom::get_point_n</a>,
+    <a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.get_start_point">Geom::get_start_point</a>,
+    <a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.get_end_point">Geom::get_end_point</a>
+    </td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Destructure a point. geo only supports 2D geometries. geos supports the z dimension. PostGIS supports the z
+       and m dimensions.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_X.html">ST_X</a>,
+       <a href="https://postgis.net/docs/manual-3.2/ST_Y.html">ST_Y</a>,
+       <a href="https://postgis.net/docs/manual-3.2/ST_Z.html">ST_Z</a>,
+       <a href="https://postgis.net/docs/manual-3.2/ST_Zmflag.html">ST_Zmflag</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/struct.Point.html#method.x">Point::x</a>,
+   <a href="https://docs.rs/geo/0.18.0/geo/struct.Point.html#method.y">Point::y</a>,
+   <a href="https://docs.rs/geo/0.18.0/geo/struct.Point.html#method.x_y">Point::x_y</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.get_x">Geom::get_x</a>,
+    <a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.get_y">Geom::get_y</a>,
+    <a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.get_z">Geom::get_z</a>
+    </td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Get the boundaries of a polygon.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_ExteriorRing.html">ST_ExteriorRing</a>,
+       <a href="https://postgis.net/docs/manual-3.2/ST_NumInteriorRings.html">ST_NumInteriorRings</a>,
+       <a href="https://postgis.net/docs/manual-3.2/ST_InteriorRingN.html">ST_InteriorRingN</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/struct.Polygon.html#method.exterior">Polygon::exterior</a>
+   (<a href="https://docs.rs/geo/0.18.0/geo/struct.Polygon.html#method.exterior_mut">Polygon::exterior_mut</a>),
+   <a href="https://docs.rs/geo/0.18.0/geo/struct.Polygon.html#method.interiors">Polygon::interiors</a>
+   (<a href="https://docs.rs/geo/0.18.0/geo/struct.Polygon.html#method.interiors_mut">Polygon::interiors_mut</a>)
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.get_exterior_ring">Geom::get_exterior_ring</a>,
+    <a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.get_num_interior_rings">Geom::get_num_interior_rings</a>,
+    <a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.get_interior_ring_n">Geom::get_interior_ring_n</a>
+    </td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Get the winding order (clockwise / counter-clockwise) of the exterior ring of a polygon. geo provides a larger
+       variety of associated functions.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_IsPolygonCW.html">ST_IsPolygonCW</a>,
+       <a href="https://postgis.net/docs/manual-3.2/ST_IsPolygonCCW.html">ST_IsPolygonCCW</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/winding_order/trait.Winding.html">algorithm::winding_order::Winding</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/struct.CoordSeq.html#method.is_ccw">CoordSeq::is_ccw</a>
+    </td>
  </tr>
 </table>
