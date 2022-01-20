@@ -524,3 +524,109 @@ Missing features include:
     </td>
  </tr>
 </table>
+
+
+# Overlay Functions
+
+This [section of the PostGIS reference](https://postgis.net/docs/manual-3.2/reference.html#Overlay_Functions) documents
+functions that compute results arising from the overlay of two geometries. _geo_ only provides 1 of 10 functions in this
+section, with a significant feature gap between _geo_ and _geos_.
+
+Missing features include:
+
+- Several [CPU](https://postgis.net/docs/manual-3.2/ST_Union.html) or [memory](https://postgis.net/docs/manual-3.2/ST_MemUnion.html)
+  efficient implementations of the union operation, and it’s converse. <span class="hl-available">Partially available in _geos_</span>.
+- A [special case of union](https://postgis.net/docs/manual-3.2/ST_Node.html) used to dissolve collections of lines into a single line.
+  <span class="hl-available">Available in _geos_</span>.
+- [Difference](https://postgis.net/docs/manual-3.2/ST_Difference.html) and
+  [symmetric difference](https://postgis.net/docs/manual-3.2/ST_SymDifference.html) of geometries.
+  <span class="hl-available">Available in _geos_</span>.
+- A [subdivision](https://postgis.net/docs/manual-3.2/ST_Subdivide.html) operation to speed up indexed queries on the larger geometry.
+  <span class="hl-not-available">Not available in _geos_</span>.
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Compute the point-set intersection of two geometries. geo only provides a limited implementation for lines.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_Intersection.html">ST_Intersection</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/line_intersection/enum.LineIntersection.html">algorithm::line_intersection::LineIntersection</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.intersection">Geom::intersection</a>
+    </td>
+ </tr>
+</table>
+
+
+## Topological Relationships
+
+While there are 16 functions in [this section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#idm11890),
+all but one are special cases of the most general [ST_Relate](https://postgis.net/docs/manual-3.2/ST_Relate.html)
+function that determines the [DE-9IM](https://en.wikipedia.org/wiki/DE-9IM) relationship matrix between two geometries.
+_geo_ provides this general function. _libgeos_ also provides this function, but it is not exposed by _geos_.
+
+For the more specific functions, _geos_ provides an optional preprocessing step that can speed up repeated relationship
+queries against a large geometry. _geo_ does not provide a similar optimization.
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Determine if a geometry is contained completely inside another.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_Contains.html">ST_Contains</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/contains/trait.Contains.html">algorithm::contains::Contains</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.contains">Geom::contains</a>
+    </td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Determine if two geometries have any points in common.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_Intersects.html">ST_Intersects</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/intersects/trait.Intersects.html">algorithm::intersects::Intersects</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.intersects">Geom::intersects</a>
+    </td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Evaluate the DE-9IM relationship matrix between two geometries. Although geos does not provide this function, it
+       provides many more methods like the two above to check specific relationships between geometries.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_Relate.html">ST_Relate</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/relate/trait.Relate.html">algorithm::relate::Relate</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><span class="hl-not-available">Not available in _geos_</span></td>
+ </tr>
+</table>
