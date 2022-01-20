@@ -217,8 +217,6 @@ Next, I map the functions available in _geo_ to those from _geos_ and _PostGIS_.
 </table>
 
 
-# Features mapping
-
 ## Geometry Accessors
 
 _geo_ effectively provides 15 of the 42 functions in this
@@ -728,7 +726,7 @@ convenience methods easily implemented using the 2 available functions.
 </table>
 
 
-# Missing classes of features
+## Missing classes of features
 
 There are several sections of features in the _PostGIS_ reference not available in _geo_ at all:
 
@@ -750,7 +748,7 @@ Some other features from _PostGIS_ that are not applicable to _geo_ include
 [specific functions exported from CGAL](https://postgis.net/docs/manual-3.2/reference.html#reference_sfcgal).
 
 
-# Beyond PostGIS
+## Beyond PostGIS
 
 Conversely, _geo_ provides some features beyond those documented in the _PostGIS_ reference.
 
