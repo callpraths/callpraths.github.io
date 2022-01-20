@@ -217,6 +217,8 @@ Next, I map the functions available in _geo_ to those from _geos_ and _PostGIS_.
 </table>
 
 
+# Features mapping
+
 ## Geometry Accessors
 
 _geo_ effectively provides 15 of the 42 functions in this
@@ -724,3 +726,51 @@ convenience methods easily implemented using the 2 available functions.
     </td>
  </tr>
 </table>
+
+
+# Missing classes of features
+
+There are several sections of features in the _PostGIS_ reference not available in _geo_ at all:
+
+- [Geometry Editors](https://postgis.net/docs/manual-3.2/reference.html#Geometry_Editors) provide methods to mutate
+  geometries that can be implemented using mutable references to the coordinates in the geometry.
+  <span class="hl-not-available">Not available in _geos_</span>.
+- [Bounding Box Operators](https://postgis.net/docs/manual-3.2/reference.html#operators-bbox) and
+  [Distance Operators](https://postgis.net/docs/manual-3.2/reference.html#operators-distance) provide syntactic sugar
+  for an algebra using available methods to relate geometries.
+  <span class="hl-not-available">Not available in _geos_</span>.
+- [Clustering Functions](https://postgis.net/docs/manual-3.2/reference.html#Clustering_Functions) implement widely used
+  algorithms for clustering of geometries using distance metrics. I would expect higher-order features like clustering
+  to be implemented in a separate crate using the foundational features available in _geo_.
+  <span class="hl-not-available">Not available in _geos_</span>.
+
+Some other features from _PostGIS_ that are not applicable to _geo_ include
+[computation of trends in the measure dimension](https://postgis.net/docs/manual-3.2/reference.html#Temporal),
+[specification of spatial reference system](https://postgis.net/docs/manual-3.2/reference.html#SRS_Functions) and
+[specific functions exported from CGAL](https://postgis.net/docs/manual-3.2/reference.html#reference_sfcgal).
+
+
+# Beyond PostGIS
+
+Conversely, _geo_ provides some features beyond those documented in the _PostGIS_ reference.
+
+- Geodesic computations.
+  - Compute area of a geometry using an
+    [algorithm due to Chamberlain Duquette](https://docs.rs/geo/0.18.0/geo/algorithm/chamberlain_duquette_area/trait.ChamberlainDuquetteArea.html).
+    Both _PostGIS_ and _geos_ project the geometry into planar coordinates for area computations.
+    <span class="hl-not-available">Not available in _geos_</span>.
+  - Find points on a line on a
+    [sphere](https://docs.rs/geo/0.18.0/geo/algorithm/geodesic_intermediate/trait.GeodesicIntermediate.html) or
+    [spheroid](https://docs.rs/geo/0.18.0/geo/algorithm/haversine_intermediate/trait.HaversineIntermediate.html).
+    These computations can be implemented in _PostGIS_ using [ST_Length](https://postgis.net/docs/manual-3.2/ST_Length.html).
+    <span class="hl-not-available">Not available in _geos_</span>.
+- A [trait](https://docs.rs/geo/0.18.0/geo/algorithm/kernels/trait.Kernel.html) to enable robust geometric calculations
+  based on [CGAL-style computational kernels](https://www.cgal.org/exact.html).
+  <span class="hl-not-available">Not available in _geos_</span>.
+
+
+# Conclusion
+
+I hope that my systematic comparison of the features in _geo_ and _geos_ will help you make an informed choice between
+the two alternatives as you start building your geospatial application in Rust. I invite you to also benefit from the
+original reason I compiled this comparison – to inspire contributions to the _geo_ crate!
