@@ -374,3 +374,153 @@ and _geos_.
     </td>
  </tr>
 </table>
+
+## Geometry Processing
+
+Geo implements 6 of the 26 functions in this
+[section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#Geometry_Processing).
+There are significant gaps in the feature set between _geo_ and _geos_ in this section.
+
+Missing features include:
+
+- [Buffering](https://postgis.net/docs/manual-3.2/ST_Buffer.html)
+  (related: [offset curves](https://postgis.net/docs/manual-3.2/ST_OffsetCurve.html)).
+  <span class="hl-available">Available in _geos_</span>.
+- [Delaunay triangulation](https://postgis.net/docs/manual-3.2/ST_DelaunayTriangles.html).
+  <span class="hl-available">Available in _geos_</span>.
+- [Inscribed](https://postgis.net/docs/manual-3.2/ST_MaximumInscribedCircle.html) and
+  [bounding circle](https://postgis.net/docs/manual-3.2/ST_MinimumBoundingCircle.html).
+  <span class="hl-not-available">Not available in _geos_</span>.
+- [Rotated bounding box](https://postgis.net/docs/manual-3.2/ST_OrientedEnvelope.html).
+  <span class="hl-available">Available in _geos_</span>.
+- Generate points [on a surface](https://postgis.net/docs/manual-3.2/ST_PointOnSurface.html)
+  or at [random](https://postgis.net/docs/manual-3.2/ST_GeneratePoints.html).
+  <span class="hl-available">Available in _geos_</span>.
+- Generate [polygons](https://postgis.net/docs/manual-3.2/ST_Polygonize.html) or
+  [lines](https://postgis.net/docs/manual-3.2/ST_Polygonize.html) formed by intersections of a collection.
+  <span class="hl-available">Available in _geos_</span>.
+- [Polygon simplification](https://postgis.net/docs/manual-3.2/ST_ChaikinSmoothing.html) using Chaikin’s method.
+  <span class="hl-not-available">Not available in _geos_</span>.
+- Generation of [Voronoi diagrams](https://postgis.net/docs/manual-3.2/ST_VoronoiPolygons.html).
+  <span class="hl-available">Available in _geos_</span>.
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Compute the geometric center of mass of a geometry.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_Centroid.html">ST_Centroid</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/centroid/trait.Centroid.html">algorithm::centroid::Centroid</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.get_centroid">Geom::get_centroid</a>
+    </td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Compute a
+       <a href="http://www.bostongis.com/postgis_concavehull.snippet">potentially concave polygon bounding a geometry</a>.
+       There is no formal definition of the concave hull. The implementations in PostGIS and geo may not always
+       agree.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_ConcaveHull.html">ST_ConcaveHull</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/concave_hull/trait.ConcaveHull.html">algorithm::concave_hull::ConcaveHull</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><span class="hl-not-available">Not available in _geos_</span></td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Compute the convex hull of a geometry. geo allows an additional, slower, algorithm that allows geometries
+       with collinear points as input.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_ConvexHull.html">ST_ConvexHull</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/convex_hull/qhull/fn.quick_hull.html">algorithm::convex_hull::quick_hull</a>,
+       <a href="https://docs.rs/geo/0.18.0/geo/algorithm/convex_hull/graham/fn.graham_hull.html">algorithm::convex_hull::graham_hull</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.convex_hull">Geom::convex_hull</a>
+    </td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Simplify a geometry using <a href="https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm">Ramer-Douglas-Peuker (RDP) algorithm</a>.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_Simplify.html">ST_Simplify</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/simplify/trait.Simplify.html">algorithm::simplify::Simplify</a>,
+       <a href="https://docs.rs/geo/0.18.0/geo/algorithm/simplify/trait.SimplifyIdx.html">algorithm::simplify::SimplifyIdx</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/struct.Geometry.html#method.simplify">Geom::simplify</a>
+    </td>
+ </tr>
+</table>
+
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Simplify a geometry using the <a href="https://bost.ocks.org/mike/simplify/">Visvalingam–Whyatt (VW) algorithm</a>.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_SimplifyVW.html">ST_SimplifyVW</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/simplifyvw/trait.SimplifyVW.html">algorithm::simplifyvw::SimplifyVW</a>,
+       <a href="https://docs.rs/geo/0.18.0/geo/algorithm/simplifyvw/trait.SimplifyVwIdx.html">algorithm::simplifyvw::SimplifyVwIdx</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><span class="hl-not-available">Not available in _geos_</span></td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Simplify a geometry preserving topological relationships. PostGIS and geos use the RDP algorithm described above.
+       geo uses the VW algorithm<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_SimplifyPreserveTopology.html">ST_SimplifyPreserveTopology</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/simplifyvw/trait.SimplifyVWPreserve.html">algorithm::simplifyvw::SimplifyVWPreserve</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/struct.Geometry.html#method.topology_preserve_simplify">Geom::topology_preserve_simplify</a>
+    </td>
+ </tr>
+</table>
