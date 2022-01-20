@@ -630,3 +630,97 @@ queries against a large geometry. _geo_ does not provide a similar optimization.
     <td><span class="hl-not-available">Not available in _geos_</span></td>
  </tr>
 </table>
+
+
+## Affine Transformations
+
+While there are 8 functions in [this section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#Affine_Transformation),
+all are specific cases of the most general [ST_Affine](https://postgis.net/docs/manual-3.2/ST_Affine.html) function.
+_geo_ provides 2 functions that cover all features except scaling geometries. _geos_ does not provide these functions.
+In either case, this feature set can be implemented using mutable iterators on points in the geometry.
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Rotate a geometry about a point. geo provides a convenience method to rotate about the centroid of the geometry.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_Rotate.html">ST_Rotate</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/rotate/trait.RotatePoint.html">algorithm::rotate::RotatePoint</a>,
+       <a href="https://docs.rs/geo/0.18.0/geo/algorithm/rotate/trait.Rotate.html">algorithm::rotate::Rotate</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><span class="hl-not-available">Not available in _geos_</span></td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Translate a geometry.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_Translate.html">ST_Translate</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/translate/trait.Translate.html">algorithm::translate::Translate</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><span class="hl-not-available">Not available in _geos_</span></td>
+ </tr>
+</table>
+
+
+## Linear Referencing
+
+_geo_ provides 2 of the 10 functions in [this section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#Linear_Referencing).
+Of the remaining, 6 are not applicable to _geo_ because they are related to 3D or 4D geometries, and others are
+convenience methods easily implemented using the 2 available functions.
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Find a point on a line at a distance a given fraction of the length from the start.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_LineInterpolatePoint.html">ST_LineInterpolatePoint</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/line_interpolate_point/trait.LineInterpolatePoint.html">
+        algorithm::line_interpolate_point::LineInterpolatePoint</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.interpolate">Geom::interpolate</a>,
+        <a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.interpolate_normalized">Geom::interpolate_normalized</a>
+    </td>
+ </tr>
+</table>
+
+<table class="one-comparison">
+ <tr>
+   <th>description</th>
+   <td>Find the point on a line closest to a given point.<br/>
+       <a href="https://postgis.net/docs/manual-3.2/ST_LineLocatePoint.html">ST_LineLocatePoint</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geo</th>
+   <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/line_locate_point/trait.LineLocatePoint.html">
+        algorithm::line_locate_point::LineLocatePoint</a>
+   </td>
+ </tr>
+ <tr>
+   <th>geos</th>
+    <td><a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.project">Geom::project</a>,
+        <a href="https://docs.rs/geos/8.0.3/geos/trait.Geom.html#tymethod.project_normalized">Geom::project_normalized</a>
+    </td>
+ </tr>
+</table>
