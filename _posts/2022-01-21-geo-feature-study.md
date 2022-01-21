@@ -29,7 +29,7 @@ In the rest of this article, I address a single point of comparison between thes
 As a rust developer, the relevant API for you is the one exported finally by the _geos_ crate so I mostly reference that
 in my comparison.
 
-_libgeos_’ feature set is more extensive than _geo_'s, and it uses
+_libgeos_’ feature set is more extensive than _geo_'s and it uses
 [more complex namespaces](https://libgeos.org/doxygen/namespaces.html) for organization of the functionality.
 For my comparison, I choose a different option for organizing the functionality –  I classify _geo_’s functions using
 [PostGIS reference documentation](https://postgis.net/docs/reference.html) sections. _PostGIS_ is a widely used and
@@ -40,7 +40,7 @@ call out features that are missing in _geo_.
 
 Finally, all of these projects are actively being developed. This comparison (and links below) apply best to
 [_geo_ 0.18.0](https://docs.rs/geo/0.18.0/geo/), [_geos_ 8.0.3](https://docs.rs/geos/8.0.3/geos/) and
-[_PostGIS_ 3.2](https://postgis.net/docs/manual-3.2/reference.html). Let’s jump right in!
+[_PostGIS_ 3.2](https://postgis.net/docs/manual-3.2/reference.html).
 
 
 [^1]: I couldn’t find the first commit for _libgeos_. The oldest reference I have is from [this commit-hook post to the
@@ -67,7 +67,7 @@ Missing features includes:
 Beyond these, _PostGIS_ provides some convenience functions that are easy to implement using those available in _geo_
 and _geos_.
 
-Let's now map features available in _geo_ to those from _PostGIS_ and _geos_.
+Next, I map features available in _geo_ to those from _PostGIS_ and _geos_.
 
 <table class="one-comparison">
  <tr>
