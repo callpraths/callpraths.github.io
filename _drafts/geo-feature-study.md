@@ -6,40 +6,54 @@ categories: geoscience
 style: geo-feature-study
 ---
 
+## TODO
+
+- Delete this TODO list
+- links
+- consistent styling (italics etc)
+
+- Make footnote be more obvious
+- Insert geos image
+
+## Start
+
 Rust is a relatively new programming language and many problems being tackled in Rust have existing solutions in C/C++.
 As a Rust developer in need of some non-trivial functionality, you often must choose between using a Rust wrapper of an
-existing C/C++ library or a pure Rust alternative. In this article, I compare [_geo_](https://lib.rs/crates/geo), a
-crate that provides primitives and algorithms for two dimensional geometric operations on a plane or on the earth’s
-surface, with the most prominent alternative –  [_geos_](https://lib.rs/crates/geos), a wrapper of the C++
-[_libgeos_](https://libgeos.org/) library. These crates can interoperate via the Rust
-[ecosystem for Geospatial analysis](https://georust.org/).
+existing C/C++ library and a pure Rust alternative. In this article, I compare [_geo_](https://lib.rs/crates/geo), a
+crate that provides primitives and algorithms for two dimensional geometric operations, with the most prominent
+alternative, [_geos_](https://lib.rs/crates/geos), a wrapper of the C++ [_libgeos_](https://libgeos.org/) library.
+You can use these crates together because they interoperate via the Rust [ecosystem for Geospatial analysis](https://georust.org/).
 
 As is frequently the case, _libgeos_ is more mature than the Rust upstart. It has a longer history of development[^1], a
 more formalized [project steering committee](https://libgeos.org/development/psc/), and illustrious clients including
 [PostGIS](https://postgis.net/), [QGIS](https://qgis.org/en/site/), [GDAL](https://gdal.org/) and
 [Shapely](https://shapely.readthedocs.io/en/stable/). _geo_ potentially has better memory safety because it is written
-in (safe) Rust. In the rest of this article, I address a single point of comparison between these alternatives for a
-prospective Rust client – feature parity.
+in (safe) Rust.
 
-_libgeos_ is implemented in C++ but it exports a [C API](https://libgeos.org/doxygen/geos__c_8h.html). _geos_ wraps
-(most of) this C API in two steps – The _geos-sys_ crate provides FFI bindings for the C API, and _geos_ wraps it in a
-more idiomatic Rust API. _libgeos_ itself is a port of the [Java _JTS_ library](https://locationtech.github.io/jts/),
+_libgeos_ is implemented in C++ and exports a [C API](https://libgeos.org/doxygen/geos__c_8h.html). _geos_ wraps
+(most of) this C API in two steps – The [_geos-sys_](https://lib.rs/crates/geos-sys) crate provides raw
+[FFI](https://doc.rust-lang.org/nomicon/ffi.html) bindings for the C API, and _geos_ wraps it in a
+more idiomatic Rust API. _libgeos_ itself is a port of the [Java JTS library](https://locationtech.github.io/jts/),
 so you could add another conceptual step in the porting / wrapping chain:
 
     TODO: Insert image.
 
+In the rest of this article, I address a single point of comparison between these alternatives -– feature parity.
 As a rust developer, the relevant API for you is the one exported finally by the _geos_ crate so I mostly reference that
-in my comparison. I call out cases where C/C++ API exists but isn’t (yet) exposed by _geos_.
+in my comparison.
 
 _libgeos_’ feature set is more extensive than _geo_, and it also uses
-[more complex namespaces](https://libgeos.org/doxygen/namespaces.html) for organization of the functionality. For my comparison, I choose a different option for organizing the functionality –  I classify _geo_’s functions into the
-[PostGIS reference documentation](https://postgis.net/docs/reference.html) sections. I map these functions to those from _geos_, and call out features that are missing in _geo_. _PostGIS_ is a widely used, extensive implementation of the
-[OGC Simple Feature Access-SQL standard](https://www.ogc.org/standards/sfs) so it is useful to map the features to
-_PostGIS_. I also think that _PostGIS_ has the most intuitive organization of this feature set and the best in-depth documentation of each feature.
+[more complex namespaces](https://libgeos.org/doxygen/namespaces.html) for organization of the functionality.
+For my comparison, I chose a different option for organizing the functionality –  I classified _geo_’s functions into the
+[PostGIS reference documentation](https://postgis.net/docs/reference.html) sections. _PostGIS_ is a widely used and
+extensive implementation of the [OGC Simple Feature Access-SQL standard](https://www.ogc.org/standards/sfs) so it is
+useful to map the features to _PostGIS_. I also think that _PostGIS_ has the most intuitive organization of the feature
+set and the best in-depth documentation of each feature. For each section, I map _geo_'s functionality to_geos_, and
+call out features that are missing in _geo_.
 
 Finally, all of these projects are actively being developed. This comparison (and links below) apply best to
 [_geo_ 0.18.0](https://docs.rs/geo/0.18.0/geo/), [_geos_ 8.0.3](https://docs.rs/geos/8.0.3/geos/) and
-[_PostGIS_ 3.2](https://postgis.net/docs/manual-3.2/reference.html). Let’s jump in then!
+[_PostGIS_ 3.2](https://postgis.net/docs/manual-3.2/reference.html). Let’s jump right in!
 
 
 [^1]: I couldn’t find the first commit for _libgeos_. The oldest reference I have is from [this commit-hook post to the
@@ -50,7 +64,7 @@ Finally, all of these projects are actively being developed. This comparison (an
 ## Measurement Functions
 
 _geo_ provides 8 of the 27 functions in this
-[section of _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#Measurement_Functions).
+[section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#Measurement_Functions).
 
 Missing features includes:
 
@@ -66,7 +80,7 @@ Missing features includes:
 Beyond these, _PostGIS_ provides some convenience functions that are easy to implement using those available in _geo_
 and _geos_.
 
-Next, I map the functions available in _geo_ to those from _geos_ and _PostGIS_.
+Let's now map features available in _geo_ to those from _PostGIS_ and _geos_.
 
 <table class="one-comparison">
  <tr>
@@ -124,7 +138,7 @@ Next, I map the functions available in _geo_ to those from _geos_ and _PostGIS_.
    <th>description</th>
    <td>Find the Euclidean distance between geometries. All three packages have support for optimized computation of the
        distance using an index. Additionally, PostGIS provides
-       <a href= "https://postgis.net/docs/manual-3.2/reference.html#operators-distance">operator syntax</a> based on this function.<br/>
+       <a href= "https://postgis.net/docs/manual-3.2/reference.html#operators-distance">an algebra</a> based on this function.<br/>
        <a href="https://postgis.net/docs/manual-3.2/ST_Distance.html">ST_Distance</a>
    </td>
  </tr>
@@ -188,7 +202,7 @@ Next, I map the functions available in _geo_ to those from _geos_ and _PostGIS_.
  <tr>
    <th>geo</th>
    <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/vincenty_distance/trait.VincentyDistance.html">algorithm::vincenty_distance::VincentyDistance</a>,
-       <a href="https://docs.rs/geo/0.18.0/geo/algorithm/geodesic_distance/trait.GeodesicDistance.html">algorithm::geodesic_distance::GeodesicDistance</a> (Improvement over Vincenty's method)</td>
+       <a href="https://docs.rs/geo/0.18.0/geo/algorithm/geodesic_distance/trait.GeodesicDistance.html">algorithm::geodesic_distance::GeodesicDistance</a> (improvement over Vincenty's method)</td>
  </tr>
  <tr>
    <th>geos</th>
@@ -208,7 +222,7 @@ Next, I map the functions available in _geo_ to those from _geos_ and _PostGIS_.
    <th>geo</th>
    <td><a href="https://docs.rs/geo/0.18.0/geo/algorithm/vincenty_length/trait.VincentyLength.html">algorithm::vincenty_length::VincentyLength</a>,
        <a href="https://docs.rs/geo/0.18.0/geo/algorithm/geodesic_length/trait.GeodesicLength.html">algorithm::geodesic_length::GeodesicLength</a>
-       (Improvement over Vincenty's method)</td>
+       (improvement over Vincenty's method)</td>
  </tr>
  <tr>
    <th>geos</th>
@@ -231,7 +245,7 @@ Missing features includes:
   measure (m) at the given point. These are not applicable to _geo_ as _geo_ only supports 2D geometries. _geos_
   supports 3D geometries (with a z-dimension) but has no notion of a measure.
 - Functions related to curves (with non-linear interpolation between points) and surfaces (3D non-linear surfaces).
-  These are not applicable to _geo_ and _geos_ as neither library implements non-linear geometries.
+  These are not applicable to _geo_ and _geos_ as neither library supports non-linear geometries.
 - A method to obtain the amount of memory consumed by a geometry. Not available in _geo_ and _geos_.
 
 Beyond these, _PostGIS_ provides some convenience functions that are easy to implement using those available in _geo_
@@ -241,8 +255,8 @@ and _geos_.
  <tr>
    <th>description</th>
    <td>Compute the bounding rectangle for a geometry.
-       Additionally, PostGIS has an
-       <a href="https://postgis.net/docs/manual-3.2/reference.html#operators-bbox">algebra</a> relating the bounding
+       Additionally, PostGIS has
+       <a href="https://postgis.net/docs/manual-3.2/reference.html#operators-bbox">an algebra</a> relating the bounding
        rectangles of two geometries.<br/>
        <a href="https://postgis.net/docs/manual-3.2/ST_Envelope.html">ST_Envelope</a>
    </td>
@@ -260,7 +274,7 @@ and _geos_.
 <table class="one-comparison">
  <tr>
    <th>description</th>
-   <td>Compute the dimensionality of a geometry. Only geo correctly handles collinear points.<br/>
+   <td>Compute the dimensionality of a geometry. Only geo properly handles collinear points.<br/>
        <a href="https://postgis.net/docs/manual-3.2/ST_Dimension.html">ST_Dimension</a>
    </td>
  </tr>
@@ -277,7 +291,7 @@ and _geos_.
 <table class="one-comparison">
  <tr>
    <th>description</th>
-   <td>Access specific points on a line or multi-line<br/>
+   <td>Access specific points on a line or multi-line.<br/>
        <a href="https://postgis.net/docs/manual-3.2/ST_NumPoints.html">ST_NumPoints</a>,
        <a href="https://postgis.net/docs/manual-3.2/ST_PointN.html">ST_PointN</a>,
        <a href="https://postgis.net/docs/manual-3.2/ST_StartPoint.html">ST_StartPoint</a>,
@@ -377,7 +391,7 @@ and _geos_.
 
 ## Geometry Processing
 
-Geo implements 6 of the 26 functions in this
+Geo provides 6 of the 26 functions in this
 [section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#Geometry_Processing).
 There are significant gaps in the feature set between _geo_ and _geos_ in this section.
 
@@ -393,10 +407,10 @@ Missing features include:
   <span class="hl-not-available">Not available in _geos_</span>.
 - [Rotated bounding box](https://postgis.net/docs/manual-3.2/ST_OrientedEnvelope.html).
   <span class="hl-available">Available in _geos_</span>.
-- Generate points [on a surface](https://postgis.net/docs/manual-3.2/ST_PointOnSurface.html)
+- Generation of points [on a surface](https://postgis.net/docs/manual-3.2/ST_PointOnSurface.html)
   or at [random](https://postgis.net/docs/manual-3.2/ST_GeneratePoints.html).
   <span class="hl-available">Available in _geos_</span>.
-- Generate [polygons](https://postgis.net/docs/manual-3.2/ST_Polygonize.html) or
+- Generation of [polygons](https://postgis.net/docs/manual-3.2/ST_Polygonize.html) or
   [lines](https://postgis.net/docs/manual-3.2/ST_Polygonize.html) formed by intersections of a collection.
   <span class="hl-available">Available in _geos_</span>.
 - [Polygon simplification](https://postgis.net/docs/manual-3.2/ST_ChaikinSmoothing.html) using Chaikin’s method.
@@ -428,8 +442,7 @@ Missing features include:
    <th>description</th>
    <td>Compute a
        <a href="http://www.bostongis.com/postgis_concavehull.snippet">potentially concave polygon bounding a geometry</a>.
-       There is no formal definition of the concave hull. The implementations in PostGIS and geo may not always
-       agree.<br/>
+       There is no formal definition of a concave hull and the results from PostGIS and geo may disagree.<br/>
        <a href="https://postgis.net/docs/manual-3.2/ST_ConcaveHull.html">ST_ConcaveHull</a>
    </td>
  </tr>
@@ -447,8 +460,8 @@ Missing features include:
 <table class="one-comparison">
  <tr>
    <th>description</th>
-   <td>Compute the convex hull of a geometry. geo allows an additional, slower, algorithm that allows geometries
-       with collinear points as input.<br/>
+   <td>Compute the convex hull of a geometry. geo allows an additional, slower, algorithm that properly handles
+       geometries with collinear points.<br/>
        <a href="https://postgis.net/docs/manual-3.2/ST_ConvexHull.html">ST_ConvexHull</a>
    </td>
  </tr>
@@ -509,7 +522,7 @@ Missing features include:
  <tr>
    <th>description</th>
    <td>Simplify a geometry preserving topological relationships. PostGIS and geos use the RDP algorithm described above.
-       geo uses the VW algorithm<br/>
+       geo uses the VW algorithm.<br/>
        <a href="https://postgis.net/docs/manual-3.2/ST_SimplifyPreserveTopology.html">ST_SimplifyPreserveTopology</a>
    </td>
  </tr>
@@ -541,7 +554,8 @@ Missing features include:
 - [Difference](https://postgis.net/docs/manual-3.2/ST_Difference.html) and
   [symmetric difference](https://postgis.net/docs/manual-3.2/ST_SymDifference.html) of geometries.
   <span class="hl-available">Available in _geos_</span>.
-- A [subdivision](https://postgis.net/docs/manual-3.2/ST_Subdivide.html) operation to speed up indexed queries on the larger geometry.
+- A [subdivision](https://postgis.net/docs/manual-3.2/ST_Subdivide.html) operation to speed up indexed queries on a
+  large geometry.
   <span class="hl-not-available">Not available in _geos_</span>.
 
 <table class="one-comparison">
@@ -566,8 +580,8 @@ Missing features include:
 
 ## Topological Relationships
 
-While there are 16 functions in [this section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#idm11890),
-all but one are special cases of the most general [ST_Relate](https://postgis.net/docs/manual-3.2/ST_Relate.html)
+There are 16 functions in [this section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#idm11890),
+but most are special cases of the most general [ST_Relate](https://postgis.net/docs/manual-3.2/ST_Relate.html)
 function that determines the [DE-9IM](https://en.wikipedia.org/wiki/DE-9IM) relationship matrix between two geometries.
 _geo_ provides this general function. _libgeos_ also provides this function, but it is not exposed by _geos_.
 
@@ -634,15 +648,16 @@ queries against a large geometry. _geo_ does not provide a similar optimization.
 
 ## Affine Transformations
 
-While there are 8 functions in [this section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#Affine_Transformation),
-all are specific cases of the most general [ST_Affine](https://postgis.net/docs/manual-3.2/ST_Affine.html) function.
-_geo_ provides 2 functions that cover all features except scaling geometries. _geos_ does not provide these functions.
-In either case, this feature set can be implemented using mutable iterators on points in the geometry.
+There are 8 functions in [this section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#Affine_Transformation),
+but all of them are specific cases of the most general [ST_Affine](https://postgis.net/docs/manual-3.2/ST_Affine.html) function.
+_geo_ provides 2 functions that cover all transformations except scaling. _geos_ does not support any features in this
+section directly. In either case, this feature set can be implemented using mutable iterators on points in the geometry.
 
 <table class="one-comparison">
  <tr>
    <th>description</th>
-   <td>Rotate a geometry about a point. geo provides a convenience method to rotate about the centroid of the geometry.<br/>
+   <td>Rotate a geometry about a point. geo also provides a convenience method to rotate about the centroid of the
+       geometry.<br/>
        <a href="https://postgis.net/docs/manual-3.2/ST_Rotate.html">ST_Rotate</a>
    </td>
  </tr>
@@ -707,7 +722,7 @@ convenience methods easily implemented using the 2 available functions.
 <table class="one-comparison">
  <tr>
    <th>description</th>
-   <td>Find the point on a line closest to a given point.<br/>
+   <td>Find the point on a line closest to a given point (potentially off the line).<br/>
        <a href="https://postgis.net/docs/manual-3.2/ST_LineLocatePoint.html">ST_LineLocatePoint</a>
    </td>
  </tr>
@@ -731,20 +746,20 @@ convenience methods easily implemented using the 2 available functions.
 There are several sections of features in the _PostGIS_ reference not available in _geo_ at all:
 
 - [Geometry Editors](https://postgis.net/docs/manual-3.2/reference.html#Geometry_Editors) provide methods to mutate
-  geometries that can be implemented using mutable references to the coordinates in the geometry.
+  geometries. These can be implemented using mutable references to the coordinates in the geometry.
   <span class="hl-not-available">Not available in _geos_</span>.
 - [Bounding Box Operators](https://postgis.net/docs/manual-3.2/reference.html#operators-bbox) and
   [Distance Operators](https://postgis.net/docs/manual-3.2/reference.html#operators-distance) provide syntactic sugar
   for an algebra using available methods to relate geometries.
   <span class="hl-not-available">Not available in _geos_</span>.
-- [Clustering Functions](https://postgis.net/docs/manual-3.2/reference.html#Clustering_Functions) implement widely used
-  algorithms for clustering of geometries using distance metrics. I would expect higher-order features like clustering
-  to be implemented in a separate crate using the foundational features available in _geo_.
+- [Clustering Functions](https://postgis.net/docs/manual-3.2/reference.html#Clustering_Functions) include widely used
+  algorithms for clustering of geometries using distance metrics. I would expect a separate crate to provide
+  higher-order features like clustering, built using the foundational features available in _geo_ or _geos_.
   <span class="hl-not-available">Not available in _geos_</span>.
 
 Some other features from _PostGIS_ that are not applicable to _geo_ include
 [computation of trends in the measure dimension](https://postgis.net/docs/manual-3.2/reference.html#Temporal),
-[specification of spatial reference system](https://postgis.net/docs/manual-3.2/reference.html#SRS_Functions) and
+[specification of a spatial reference system](https://postgis.net/docs/manual-3.2/reference.html#SRS_Functions) and
 [specific functions exported from CGAL](https://postgis.net/docs/manual-3.2/reference.html#reference_sfcgal).
 
 
@@ -752,12 +767,12 @@ Some other features from _PostGIS_ that are not applicable to _geo_ include
 
 Conversely, _geo_ provides some features beyond those documented in the _PostGIS_ reference.
 
-- Geodesic computations.
-  - Compute area of a geometry using an
+- Geodetic computations.
+  - Computation of area of a geometry using an
     [algorithm due to Chamberlain Duquette](https://docs.rs/geo/0.18.0/geo/algorithm/chamberlain_duquette_area/trait.ChamberlainDuquetteArea.html).
     Both _PostGIS_ and _geos_ project the geometry into planar coordinates for area computations.
     <span class="hl-not-available">Not available in _geos_</span>.
-  - Find points on a line on a
+  - Computation of points on a great-arc of a
     [sphere](https://docs.rs/geo/0.18.0/geo/algorithm/geodesic_intermediate/trait.GeodesicIntermediate.html) or
     [spheroid](https://docs.rs/geo/0.18.0/geo/algorithm/haversine_intermediate/trait.HaversineIntermediate.html).
     These computations can be implemented in _PostGIS_ using [ST_Length](https://postgis.net/docs/manual-3.2/ST_Length.html).
@@ -771,4 +786,4 @@ Conversely, _geo_ provides some features beyond those documented in the _PostGIS
 
 I hope that my systematic comparison of the features in _geo_ and _geos_ will help you make an informed choice between
 the two alternatives as you start building your geospatial application in Rust. I invite you to also benefit from the
-original reason I compiled this comparison – to inspire contributions to the _geo_ crate!
+original reason for this comparison – to inspire my contributions to the _geo_ crate!
