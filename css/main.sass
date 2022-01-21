@@ -5,15 +5,13 @@
 
 @import 'bourbon/bourbon'
 
-.cf
-  @include clearfix
-
 $rs: 16px
-
 $font-serif: Linux Libertine
 $font-sans: Open Sans, MundoSans, "Helvetica Neue", Arial, Helvetica, sans-serif
-
 $max-flow-width: 960px
+
+.cf
+  @include clearfix
 
 @mixin respond-to($breakpoint)
   @media only screen and (max-width: $breakpoint + px)
@@ -25,8 +23,6 @@ $max-flow-width: 960px
 
 main
   display: block
-
-
 
 body
   font-family: $font-sans
@@ -449,7 +445,7 @@ body
       margin-bottom: 12px
       padding-top: 2px
       p
-        padding: 0 0 golden-ratio(1rem,  1)
+        padding: 0 0 golden-ratio(1rem, 1)
     ol li
       list-style-type: decimal
   .bottom-teaser
@@ -539,6 +535,12 @@ body
       display: none
     &:hover
       color: #FFFFFF
+
+// Dangerous: This class comes from kramdown's translation of Markdown to HTML.
+// Probably not stable.
+.footnotes
+  padding-top: 4rem
+  padding-left: 1rem
 
 pre,
 code
