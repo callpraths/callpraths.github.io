@@ -9,8 +9,6 @@ style: geo-feature-study
 ## TODO
 
 - Delete this TODO list
-- links
-- consistent styling (italics etc)
 
 - Make footnote be more obvious
 - Insert geos image
@@ -38,17 +36,17 @@ so you could add another conceptual step in the porting / wrapping chain:
 
     TODO: Insert image.
 
-In the rest of this article, I address a single point of comparison between these alternatives -– feature parity.
+In the rest of this article, I address a single point of comparison between these alternatives – feature parity.
 As a rust developer, the relevant API for you is the one exported finally by the _geos_ crate so I mostly reference that
 in my comparison.
 
-_libgeos_’ feature set is more extensive than _geo_, and it also uses
+_libgeos_’ feature set is more extensive than _geo_, and it uses
 [more complex namespaces](https://libgeos.org/doxygen/namespaces.html) for organization of the functionality.
-For my comparison, I chose a different option for organizing the functionality –  I classified _geo_’s functions into the
+For my comparison, I chose a different option for organizing the functionality –  I classified _geo_’s functions using
 [PostGIS reference documentation](https://postgis.net/docs/reference.html) sections. _PostGIS_ is a widely used and
 extensive implementation of the [OGC Simple Feature Access-SQL standard](https://www.ogc.org/standards/sfs) so it is
 useful to map the features to _PostGIS_. I also think that _PostGIS_ has the most intuitive organization of the feature
-set and the best in-depth documentation of each feature. For each section, I map _geo_'s functionality to_geos_, and
+set and the best in-depth documentation of each function. For each section, I map _geo_'s functionality to _geos_, and
 call out features that are missing in _geo_.
 
 Finally, all of these projects are actively being developed. This comparison (and links below) apply best to
@@ -63,7 +61,7 @@ Finally, all of these projects are actively being developed. This comparison (an
 
 ## Measurement Functions
 
-_geo_ provides 8 of the 27 functions in this
+_geo_ provides 8 of 27 functions in this
 [section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#Measurement_Functions).
 
 Missing features includes:
@@ -233,7 +231,7 @@ Let's now map features available in _geo_ to those from _PostGIS_ and _geos_.
 
 ## Geometry Accessors
 
-_geo_ effectively provides 15 of the 42 functions in this
+_geo_ effectively provides 15 of 42 functions in this
 [section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#Geometry_Accessors) . While
 there is a large gap in the feature set in this section, many of the missing functions have easy and idiomatic
 implementations using available accessors and iterators. Also, some of the functions are not applicable to _geo_ because
@@ -391,7 +389,7 @@ and _geos_.
 
 ## Geometry Processing
 
-Geo provides 6 of the 26 functions in this
+Geo provides 6 of 26 functions in this
 [section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#Geometry_Processing).
 There are significant gaps in the feature set between _geo_ and _geos_ in this section.
 
@@ -541,9 +539,9 @@ Missing features include:
 
 # Overlay Functions
 
-This [section of the PostGIS reference](https://postgis.net/docs/manual-3.2/reference.html#Overlay_Functions) documents
-functions that compute results arising from the overlay of two geometries. _geo_ only provides 1 of 10 functions in this
-section, with a significant feature gap between _geo_ and _geos_.
+This [section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#Overlay_Functions)
+documents functions that compute results arising from the overlay of two geometries. _geo_ only provides 1 of 10
+functions in this section, with a significant feature gap between _geo_ and _geos_.
 
 Missing features include:
 
@@ -694,7 +692,7 @@ section directly. In either case, this feature set can be implemented using muta
 
 ## Linear Referencing
 
-_geo_ provides 2 of the 10 functions in [this section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#Linear_Referencing).
+_geo_ provides 2 of 10 functions in [this section of the _PostGIS_ reference](https://postgis.net/docs/manual-3.2/reference.html#Linear_Referencing).
 Of the remaining, 6 are not applicable to _geo_ because they are related to 3D or 4D geometries, and others are
 convenience methods easily implemented using the 2 available functions.
 
