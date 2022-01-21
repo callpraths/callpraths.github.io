@@ -29,9 +29,9 @@ In the rest of this article, I address a single point of comparison between thes
 As a rust developer, the relevant API for you is the one exported finally by the _geos_ crate so I mostly reference that
 in my comparison.
 
-_libgeos_’ feature set is more extensive than _geo_, and it uses
+_libgeos_’ feature set is more extensive than _geo_'s, and it uses
 [more complex namespaces](https://libgeos.org/doxygen/namespaces.html) for organization of the functionality.
-For my comparison, I chose a different option for organizing the functionality –  I classified _geo_’s functions using
+For my comparison, I choose a different option for organizing the functionality –  I classify _geo_’s functions using
 [PostGIS reference documentation](https://postgis.net/docs/reference.html) sections. _PostGIS_ is a widely used and
 extensive implementation of the [OGC Simple Feature Access-SQL standard](https://www.ogc.org/standards/sfs) so it is
 useful to map the features to _PostGIS_. I also think that _PostGIS_ has the most intuitive organization of the feature
