@@ -1,19 +1,10 @@
 ---
 layout: post
-title:  "Geo feature study"
-date:   2022-01-16 00:00:00 +0000
+title:  "Feature set study: geo vs geos"
+date:   2022-01-21 00:00:00 +0000
 categories: geoscience
 style: geo-feature-study
 ---
-
-## TODO
-
-- Delete this TODO list
-
-- Make footnote be more obvious
-- Insert geos image
-
-## Start
 
 Rust is a relatively new programming language and many problems being tackled in Rust have existing solutions in C/C++.
 As a Rust developer in need of some non-trivial functionality, you often must choose between using a Rust wrapper of an
@@ -32,9 +23,7 @@ _libgeos_ is implemented in C++ and exports a [C API](https://libgeos.org/doxyge
 (most of) this C API in two steps – The [_geos-sys_](https://lib.rs/crates/geos-sys) crate provides raw
 [FFI](https://doc.rust-lang.org/nomicon/ffi.html) bindings for the C API, and _geos_ wraps it in a
 more idiomatic Rust API. _libgeos_ itself is a port of the [Java JTS library](https://locationtech.github.io/jts/),
-so you could add another conceptual step in the porting / wrapping chain:
-
-    TODO: Insert image.
+so you could add another conceptual step in the porting / wrapping chain.
 
 In the rest of this article, I address a single point of comparison between these alternatives – feature parity.
 As a rust developer, the relevant API for you is the one exported finally by the _geos_ crate so I mostly reference that
