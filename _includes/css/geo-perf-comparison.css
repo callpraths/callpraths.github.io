@@ -1,0 +1,43 @@
+.perf-report {
+    width: 100%;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    border: solid #DDDDDD 0.0625rem;
+    padding: 1rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-family: ui-monospace,
+             Menlo, Monaco,
+             "Cascadia Mono", "Segoe UI Mono",
+             "Roboto Mono",
+             "Oxygen Mono",
+             "Ubuntu Monospace",
+             "Source Code Pro",
+             "Fira Mono",
+             "Droid Sans Mono",
+             "Courier New", monospace;
+}
+pre {
+    width: 100%;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: ui-monospace,
+             Menlo, Monaco,
+             "Cascadia Mono", "Segoe UI Mono",
+             "Roboto Mono",
+             "Oxygen Mono",
+             "Ubuntu Monospace",
+             "Source Code Pro",
+             "Fira Mono",
+             "Droid Sans Mono",
+             "Courier New", monospace;
+}
+.assembly {
+    color: #999999
+}
+.assembly b {
+    color: #DDDDDD
+}
