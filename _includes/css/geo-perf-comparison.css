@@ -19,9 +19,10 @@
              "Courier New", monospace;
 }
 pre {
-    width: 100%;
-    margin-left: 2rem;
-    margin-right: 2rem;
+    margin-left: 4rem;
+    margin-right: 4rem;
+    border: none;
+    padding: unset;
     overflow: hidden;
     text-overflow: ellipsis;
     font-family: ui-monospace,
@@ -36,8 +37,11 @@ pre {
              "Courier New", monospace;
 }
 .assembly {
-    color: #999999
+    color: #999999;
 }
 .assembly b {
-    color: #DDDDDD
+    color: #DDDDDD;
+}
+code {
+    border: none;
 }
