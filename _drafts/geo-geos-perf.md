@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Performance comparison of four simple geospatial algorithms"
+title:  "Performance comparison of three simple geospatial algorithms"
 date:   2022-02-01 00:00:00 +0000
 categories: geoscience
 style: geo-perf-comparison
@@ -25,7 +25,7 @@ To provide an answer, I compare the performance of three algorithmically simple 
 
 Application performance evaluation [is hard][perf-mistakes] - you risk measuring the wrong thing, in the wrong way, and making the wrong inferences from observations.
 
-**What**: An application’s performance depends heavily on operational context – the application may perform differently for different inputs, in executing different operations, and when used in the context of other larger software. Thus, you should benchmark an application in an environment that is [faithful to the target context][brendangregg-methodology]. My performance evaluation below is not a broadly applicable comparison of Rust and C++, or even _geo_ and _geos_. Instead, it is an exercise in understanding the root causes of observed differences in performance of simple algorithms in isolation. I use realistic inputs so that I observe performance differences on meaningful operations, but side-step the issue of scale and software context. A more contextual evaluation would use real-world inputs at scale and a real-world problem with a sequence of operations, like [this study][modern-spatial-libraries-benchmark] of geospatial libraries used by many of the gig-economy technology companies.
+**What**: An application’s performance depends heavily on operational context – the application may perform differently for different inputs, in executing different operations, and when used in the context of other larger software. Thus, you should benchmark an application in an environment that is [faithful to the target context][brendangregg-methodology]. My performance evaluation below is not a broadly applicable comparison of Rust and C++, or even _geo_ and _geos_. Instead, it is an exercise in understanding the root causes of observed differences in performance of simple algorithms in isolation. I use realistic inputs so that I observe performance differences on meaningful operations, but side-step the issue of scale and software context. A more contextual evaluation would use real-world inputs at scale and a real-world problem with a sequence of operations. A good example is [this study comparing several modern spatial libraries][modern-spatial-libraries-benchmark].
 
 **How**: Application performance is also very sensitive to the execution context - hardware characteristics (CPU architecture, memory cache sizes), software characteristics (kernel scheduler, memory allocator), and other concurrent processes on the system greatly affect performance. Conventional wisdom in application performance evaluation is to [control as many of these variables as possible][sled-perf-blog-exp-design]. I take a different approach with fewer controls that works well for comparing the performance of two alternatives, but isn’t valid for reporting absolute performance of an application. I describe this methodology in its own section below.
 
@@ -55,7 +55,7 @@ The trick is to realize that my experiment only needs to compare the relative pe
 
 This way, instead of seeking to control the execution environment, I account for random noise (via repeated measurements) and drift (via interleaved measurements) and work with ratios of measured quantities[^2]. I report both the mean and variance of the observed QPS ratio to provide confidence in the reported metric. In my opinion, the results from this experimental setup are more trustworthy than [single-shot][polygon-clipping-bench] or [best-of-N-runs][legacy-geo-bench] comparisons, even though I have no control on the execution environment.
 
-A final methodological note on _what_ is being measured - even though I evaluate simple operations in isolation, I use realistic inputs so that the benchmark is indicative of how the operations would perform in a real-world application. I use as input a set of polygons that represent the [boundaries of all the administrative districts of India][india-districts-shp][^3]. These computations could reasonably arise as a small step in a larger geo statistical study.
+A final methodological note on _what_ is being measured - even though I evaluate simple operations in isolation, I use realistic inputs so that the benchmark is indicative of how the operations would perform in a real-world application. I use as input a set of polygons that represent the [boundaries of all the administrative districts of India][india-districts-shp][^3]. These computations could reasonably arise as a small step in a larger geo-statistical study.
 
 [^1]: A stark example of measurement drift is [CPU throttling][gcp-cpu-burst] – I found the measured runtime frequently jumps by ~30% after the benchmark has been running for about a minute. I also found that this drift does not affect runtime ratios (and hence the reported metrics) significantly. In my analyses, I remove the observations from the first few iterations to (mostly) avoid this jump.
 [^2]: My methodology does not account for the possibility of systematic error. In the [study I linked earlier][modern-spatial-libraries-benchmark], the authors found a large performance difference stemming from differences in cache behavior of the list data type in Java and C. This difference was dependent on JVM configuration and CPU cache sizes. Such errors aren’t easy to anticipate (and hence correct) even in methodologies that seek to control the execution environment.
@@ -74,73 +74,69 @@ A final methodological note on _what_ is being measured - even though I evaluate
 
 ## Comparisons
 
-I found that _geo_ performs better than _geos_ for all operations I benchmarked. The QPS ratio ranges from nearly 1 to 40 for the operations, though whether this difference is practically significant would depend on the application context. This difference in QPS stems from one of two sources:
+_geo_ performed better than _geos_ for all operations I benchmarked. The QPS ratio ranged from 1 to 40 for the operations. This difference in QPS stems from one of two sources:
 
-- _geo_’s implementation provides better optimization opportunities to the compiler. The Rust compiler avoids memory allocations more aggressively and generates more efficient machine code than C++.
-- _geo_’s algorithms are simpler. They entirely avoid costly computations that _geos_ incurs.
+- _geo_’s implementation provides better optimization opportunities to the compiler. The Rust compiler avoids memory allocations more aggressively and generates more efficient machine code than C++. But, as with many compiler optimization benchmarks, [your mileage may vary](#a-note-on-compiler-optimization-settings).
+- _geo_’s algorithms are simpler. _geo_ avoids costly computations that _geos_ incurs.
 
-My analysis supports the [guidance][rust-perf-tips] that it is better to concentrate on algorithmic and data-structure driven performance improvements in your programs over manual micro-tuning – a program that avoids a computation entirely always performs better than one that computes it efficiently. It also supports the argument that Rust’s language model provides for better optimization opportunities for the compiler, leading to more efficient machine code than C/C++.
-
-But, as with many compiler optimization benchmarks, when it comes to performance benefit simply from using Rust, [your mileage may vary](#a-note-on-compiler-optimization-settings).
+Ultimately, algorithmic differences lead to larger performance gains, and amplify the performance improvements from compiler optimizations. Thus, my analysis supports the guidance that it is [better to concentrate on algorithmic and data-structure driven performance improvements][rust-perf-tips] in your programs over manual micro-tuning – a program that avoids a computation entirely always performs better than one that computes it efficiently.
 
 [rust-perf-tips]: https://nnethercote.github.io/perf-book/general-tips.html
 
 
 ### Minimum Bounding Rectangle
 
-The first operation I compare is also the simplest – the computation of the [minimum bounding rectangle][wiki-mbr] of the input geometry. I found that _geo_ and _geos_ perform similarly. On average, _geo_ computes 1.4 times as many queries per second as _geos_ (mean from 150 observations with standard deviation of 0.2).
+The first operation I compare is also the simplest – the computation of the [minimum bounding rectangle][wiki-mbr] of a set of polygons. I found that _geo_ and _geos_ perform similarly. On average, _geo_ computes 1.4 times as many queries per second as _geos_ (mean from 150 observations with standard deviation of 0.2).
 
-A visual representation of all 150 observations provides further insight into the observed difference.
+A visual representation of all 150 observations provides further insight into the observed difference:
 
 {:refdef: style="text-align: center;"}
 ![](/assets/article_images/geo-geos-perf/mbr-qps-ratio.svg)
 {: refdef}
 
-Observe how the QPS ratio stays above 1.0 for most observations. Also observe how the QPS ratio varies to a much larger degree after the first 80 observations. It is useful to graph the raw observations to understand this increase in variance.
+Observe how the QPS ratio stays mostly above 1.0 but it varies to a much larger degree after the first 60 observations. The increased variance in latter observations is surprising. It is useful to graph the raw observations to understand this increase in variance:
 
 {:refdef: style="text-align: center;"}
 ![](/assets/article_images/geo-geos-perf/mbr-qps.svg)
 {: refdef}
 
-This graph reveals that not only does the runtime vary more after the first 80 observations, it drops significantly for both crates for the latter observations. This is an example of observational drift I had mentioned in the methodology section – an uncontrolled environment factor affected performance of both _geo_ and _geos_ significantly during this benchmark run, but the QPS ratio remains unaffected. The variance in the ratio jumps for the latter observations because the QPS for _geo_ varies to a larger degree around its mean than _geos_ for these observations.
+This graph reveals that not only does the runtime vary more after the first 60 observations, it drops significantly for both crates. This is an example of observational drift I mentioned earlier – an uncontrolled environmental factor affected performance of both _geo_ and _geos_ significantly during this benchmark run, but the QPS ratio remained unaffected. The variance in the ratio jumps for the latter observations because the QPS for _geo_ varies to a larger degree around its mean than _geos_ for these observations.
 
 [wiki-mbr]: https://en.wikipedia.org/wiki/Minimum_bounding_rectangle
 
 
 #### Root-cause analysis
 
-To understand the reasons behind the observed performance difference, I profiled both implementations using [linux perf][linux-perf][^4] to estimate the CPU cycles spent in various functions.
+To understand the reasons behind the observed performance difference, I profiled both implementations using [linux `perf`][linux-perf][^4] to estimate the CPU cycles spent in various functions.
 
-The following (vastly) simplified perf report for geo’s computation shows what you would expect:
+The following (vastly) simplified `perf` report for _geo_’s computation shows what you would expect:
 
 <pre>
 - 83.42% geo_types::private_utils::get_min_max (inlined)
 - 16.58% &lt;core::iter::adapters::flatten::FlatMap&lt;I,U,F&gt; as core::iter::traits::iterator::Iterator&gt;::next (inlined)
 </pre>
 
-Most of the CPU cycles are spent inside `geo_types::private_utils::get_min_max`, computing the minimum (and maximum) values of the x- and y-coordinates of all the vertices in the geometry. The remaining time is spent inside the implementation of an iterator over all the vertices.
+Most of the CPU cycles are spent inside `geo_types::private_utils::get_min_max`, computing the minimum (and maximum) values of the x- and y-coordinates of all the vertices in the geometry. The remaining CPU cycles are spent iterating over the vertices.
 
-Contrast the simple perf report for _geo_ with that for _geos_:
+Contrast this simple report with that for _geos_:
 
 <pre>
 - 89.69% &lt;geos::geometry::Geometry as geos::geometry::Geom&gt;::envelope
-   - 84.02% geos::geom::GeometryFactory::toGeometry
+   - <b>84.02% geos::geom::GeometryFactory::toGeometry</b>
       - 21.57% geos::geom::GeometryFactory::createLinearRing
       - 17.81% geos::geom::GeometryFactory::createPolygon
       - 13.58% geos::geom::DefaultCoordinateSequenceFactory::create
       - 9.42% std::unique_ptr&lt;geos::geom::Geometry, std::default_delete&lt;geos::geom::Geometry&gt; &gt;::unique_ptr&lt;geos::geom::Polygon, std::default_delete&lt;geos::geom::Polygon&gt;, void&gt;
-         3.7% geos::geom::Envelope::getMinY
+         <b>3.7% geos::geom::Envelope::getMinY</b>
 - 10.30% core::ptr::drop_in_place&lt;geos::geometry::Geometry&gt; (inlined)
       - 9.4% geos::geom::Polygon::~Polygon
 </pre>
 
-Like all perf report snippets in this post, this is a simplified view of a perf report that shows a tree of call-graphs. Stack frames deeper in the call-graph are indented further to the right. Each stack frame is labeled with the fraction of total CPU cycles spent inside the subtree rooted at that node. For example, the report above states that 89.67% of the total CPU cycles are spent inside `<geos::geometry::Geometry as geos::geometry::Geom>::envelope` or its children, 84.02% of total CPU cycles are spent in `geos::geom::GeometryFactory::toGeometry` and its children, when called by `<geos::geometry::Geometry as geos::geometry::Geom>::envelope`, and so on.
+Like all `perf` report snippets in this post, this is a simplified view of a report that shows a tree of call stacks. Stack frames deeper in the call graph are indented further to the right. Each stack frame is labeled with the fraction of total CPU cycles spent inside the subtree rooted at that node. For example, the report above states that 89.69% of the total CPU cycles are spent inside `<geos::geometry::Geometry as geos::geometry::Geom>::envelope` or its children, 84.02% of total CPU cycles are spent in `geos::geom::GeometryFactory::toGeometry` and its children, when called by `<geos::geometry::Geometry as geos::geometry::Geom>::envelope`, and so on.
 
-This perf report indicates that very little time is spent in a computation similar to `geo_types::private_utils::get_min_max` from above (3.7% in `geos::geom::Envelope::getMinY`). Most of the time is instead spent in creating new geometry objects via `geos::geom::GeometryFactory::toGeometry`, and the rest is spent destroying those objects.
+The report indicates that very little time is spent in a computation similar to `geo_types::private_utils::get_min_max` from above (3.7% in `geos::geom::Envelope::getMinY`). Most of the time is instead spent in creating new geometry objects via `geos::geom::GeometryFactory::toGeometry`, and the rest is spent destroying those objects.
 
-Another look at the input geometries in my experimental setup helps shed light on why memory allocation is the bottleneck in geos computation. The input geometry consists of a collection of polygons. The minimum bounding rectangle of the entire geometry is the minimum bounding rectangle of the individual polygons’ minimum bounding rectangles. _geos_ allocates polygons to represent the minimum bounding rectangle of all the polygons in the input, uses those to compute the overall minimum bounding rectangle, and then destroys the intermediate polygons. The allocation and deallocation of these temporary polygons easily outweighs the computational cost of computing the minimum and maximum of a few coordinates.
-
-It is not surprising that memory allocation is the costliest step in _goes_’ computation. On the contrary, it is surprising that _geo_ avoids a similar cost. A look at the disassembled machine code for _geo_’s implementation reveals the secret:
+Another look at the input geometry in my experimental setup helps shed light on why memory allocation is the bottleneck in _geos_ computation. The input geometry consists of a collection of polygons. The minimum bounding rectangle of the entire geometry is the minimum bounding rectangle of the individual polygons’ minimum bounding rectangles. _geos_ allocates polygons to represent the minimum bounding rectangle of each polygon in the input, uses those to compute the overall minimum bounding rectangle, and then destroys the intermediate polygons. The allocation and deallocation of these temporary polygons easily outweighs the cost of computing the minimum and maximum of a few coordinates. What is surprising is that _geo_ avoids a similar cost. A look at the disassembled machine code for _geo_’s implementation indicates how:
 
 <pre class="assembly">
 &lt;geo_types::multi_polygon::MultiPolygon&lt;T&gt; as geo::algorithm::bounding_rect::BoundingRect&lt;T&gt;&gt;::bounding_rect()
@@ -160,9 +156,9 @@ It is not surprising that memory allocation is the costliest step in _goes_’ c
 [ ... SNIP ... ]
 </pre>
 
-This is a snippet of the relevant function in _geo_. The source code annotation shows the anticipated allocation of a new rectangle to represent the minimum bounding rectangle for each input polygon. But the corresponding assembly consists only of `movsd`, an [x86 instruction to move double precision floating point values][x86-movsd], and no calls to memory allocation subroutines. My guess here is that because of Rust’s explicit memory lifetime semantics, the compiler is able to entirely optimize away memory allocation, instead recycling freed memory to store the individual minimum bounding rectangles!
+This is a snippet of the relevant function in _geo_. The source code annotation shows the anticipated allocation of a new rectangle to represent the minimum bounding rectangle for each input polygon. But the corresponding assembly consists only of `movsd`, an [x86 instruction to move double precision floating point values][x86-movsd], and no calls to memory allocation subroutines. The compiler is able to entirely optimize away memory allocation, instead recycling freed memory to store the individual minimum bounding rectangles! My guess here is that Rust's explicit memory lifetimes make such optimizations easier for the compiler.
 
-In the end, even though (or partly because) the evaluated computations are very simple, this is not an apples-to-oranges comparison. The performance bottleneck for _geo_ is computation of minimum and maximum coordinates of the input polygons, while for _geos_ it is memory allocations. In a way, this is a comparison between numerical computation and memory allocation!
+In the end, even though (or, partly because) the evaluated computations are very simple, this is not an apples-to-oranges comparison - the performance bottleneck for _geo_ is computation of minimum and maximum coordinates of the input polygons, while for _geos_ it is memory allocations.
 
 
 [^4]: Recorded with some variation of the command `perf record -F 300 -g --call-graph dwarf` and reported with some variation of `perf report -g`.
@@ -173,7 +169,7 @@ In the end, even though (or partly because) the evaluated computations are very 
 
 ### Area
 
-The second operation I compare is computation of (2-dimensional, planar) area. I found that _geo_ outperforms _geos_ with a larger margin than minimum bounding rectangle computation. On average, _geo_ computes 8.1 times as many area queries per second as _geos_ (mean from 98 observations after outlier removal with standard deviation of 0.1).
+The second operation I compare is computation of (2-dimensional, planar) area. I found that _geo_ outperforms _geos_ with a larger margin than for minimum bounding rectangle. On average, _geo_ computes 8.1 times as many area queries per second as _geos_ (mean from 98 observations (after outlier removal) with standard deviation of 0.1).
 
 {:refdef: style="text-align: center;"}
 ![](/assets/article_images/geo-geos-perf/area-qps-ratio.svg)
@@ -182,7 +178,7 @@ The second operation I compare is computation of (2-dimensional, planar) area. I
 
 #### Root-cause analysis
 
-As for minimum bounding area, a perf report for a profiled _geo_ computations shows unsurprising distribution of CPU cycles.
+Here is a simplified `perf` report for a profiled _geo_ area computation.
 
 <pre>
 - geo::algorithm::area::twice_signed_ring_area (inlined)
@@ -191,9 +187,9 @@ As for minimum bounding area, a perf report for a profiled _geo_ computations sh
   - 19.31% &lt;geo_types::line::Line&lt;T&gt; as geo::algorithm::map_coords::MapCoords&lt;T,NT&gt;&gt;::map_coords (inlined)
 </pre>
 
-This simplified report shows that about half the CPU cycles are spent in iterators (over polygons and coordinates of polygons). The remaining time is spent in the individual polygons’ area computation (using the [shoelace formula][shoelace-formula]).
+This report shows that half the CPU cycles are spent in iterators (over polygons and coordinates of polygons) and the remaining are spent in the individual polygons’ area computation.
 
-In this case, a profiled _geos_ computation shows a similar CPU cycle distribution:
+A report for profiled _geos_ computation shows similar CPU cycle distribution:
 
 <pre>
 - 98.45% geos::algorithm::Area::ofRingSigned
@@ -201,9 +197,11 @@ In this case, a profiled _geos_ computation shows a similar CPU cycle distributi
       13.24% std::vector&lt;geos::geom::Coordinate, std::allocator&lt;geos::geom::Coordinate&gt; &gt;::operator[]
 </pre>
 
-Most of the CPU cycles are spent within `geos::algorithm::Area::ofRingSigned`. Of these about a quarter are spent in iteration, and the rest are spent in the function implementation, computing the area of individual polygons using the same formula as _geo_.
+A quarter of the CPU cycles are spent in iteration, and the rest are spent in the body of `geos::algorithm::Area::ofRingSigned` computing the area of individual polygons.
 
-Unlike minimum bounding rectangle computation, the two implementations for area have similar performance profiles. Thus, the difference in the performance lies in the shoelace formula computation and iteration. The shoelace formula computation in _geo_ is about 12 times faster than that in _geos_ (_geo_ overall area computation is 8 times faster and shoelace formula computation accounts for 50% of time in _geo_, but 75% in _geos_). The reason is revealed by the following snippets of disassembled machine code of the relevant functions:
+Unlike minimum bounding rectangle, the two implementations for area have similar performance profiles and performance bottleneck - area computation for the individual polygons. Both _geo_ and _geos_ use the [shoelace formula][shoelace-formula] for computing area of individual polygons[^5]. This computation in _geo_ is about 12 times faster than that in _geos_ (_geo_ overall area computation is 8 times faster; individual polygon area computation accounts for 50% of time in _geo_, but 75% in _geos_). The following snippets of disassembled machine code of the relevant functions reveal the reason behind this difference:
+
+_geo_:
 
 <pre class="assembly">
 geo::algorithm::area::get_linestring_area()
@@ -220,6 +218,8 @@ Percent
 
 [ … SNIP …]
 </pre>
+
+_geos_:
 
 <pre class="assembly">
 geos::algorithm::Area::ofRingSigned()
@@ -241,17 +241,20 @@ Percent
 [ ...SNIP… ]
 </pre>
 
-_geos_ spends a large number of CPU cycles moving scalar double-precision floating-point values between memory locations via the [`movsd`][x86-movsd] instruction. _geo_ instead uses the [`movapd`][x86-movapd] instruction to move two double-precision floating-point values for far fewer CPU cycles. The Rust compiler vectorizes the area computation and delivers a significant speed up!
+_geos_ spends a large fraction of CPU cycles moving scalar double-precision floating-point values between memory locations via the [`movsd`][x86-movsd] instruction. _geo_ instead uses the [`movapd`][x86-movapd] instruction to move two double-precision floating-point values for far fewer CPU cycles. The Rust compiler vectorizes the area computation and delivers a significant speed up!
 
-_geo_ achieves another small speed up via faster iteration. Iteration in _geo_ is 4 times faster than in _geos_. I have not analyzed the root cause of this speed up, but in my experience, Rust generates significantly simpler machine code for iterators than C++, with more aggressive inlining and consistent performance gain for all the operations that I benchmarked.
+_geo_ achieves another small speed up via faster iteration. Iteration in _geo_ is 4 times faster than in _geos_. I have not analyzed the root cause of this speed up, but the machine code generated for iteration by the Rust compiler was significantly simpler than that for C++, with more aggressive inlining and consistent performance gain, for all the operations that I benchmarked.
 
+[^5]: In an [earlier post on this blog][area-numerical-stability-post], I discuss some numerical stability concerns in computing area of a polygon using the shoelace formula.
+
+[area-numerical-stability-post]: https://callpraths.github.io/geoscience/2021/12/23/geo-area-error-analysis.html
 [shoelace-formula]: https://mathworld.wolfram.com/PolygonArea.html
 [x86-movapd]: https://c9x.me/x86/html/file_module_x86_id_179.html
 
 
 ### Centroid
 
-Among the operations I benchmarked, I found the largest performance difference in computation of the centroid. On average, _geo_ computes 47.6 times as many centroid queries per second as _geos_ (mean from 100 observations after outlier removal with standard deviation of 1.39).
+Among the operations I benchmarked, I found the largest performance difference in computation of the centroid. On average, _geo_ computes 47.6 times as many centroid queries per second as _geos_ (mean from 100 observations (after outlier removal) with standard deviation of 1.39).
 
 {:refdef: style="text-align: center;"}
 ![](/assets/article_images/geo-geos-perf/centroid-qps-ratio.svg)
@@ -262,7 +265,7 @@ Among the operations I benchmarked, I found the largest performance difference i
 
 Centroid computation is a more complex operation than the two I described above. The key sources of speed up in _geo_ are the same – more aggressive function inlining and vectorization of hot computations – but their effect is amplified by algorithmic differences in the two implementations. _geos_’ algorithm iterates over polygons (and their coordinates) many more times than _geo_, and requires more numerical computations than _geo_.
 
-The following simplified perf report for _geo_ indicates a more complex algorithm than any of the reports above:
+The following simplified `perf` report for _geo_ indicates a more complex algorithm than any of the reports above:
 
 <pre>
 - geo::algorithm::centroid::CentroidOperation&lt;T&gt;::add_ring
@@ -326,7 +329,7 @@ Percent
 [ ...SNIP... ]
 </pre>
 
-Contrast the perf report for _geo_ with the following report for _geos_. The call stacks are deeper (less inlining) and there are multiple instances of iteration and costly computations in `geos::geom::Coordinate::distance`, `geos::algorithm::Centroid::centroid3`, `geos::algorithm::Centroid::area2` etc.
+Contrast the `perf` report for _geo_ with the following report for _geos_. The call graph is deeper (less inlining) and there are multiple instances of iteration and costly computations in `geos::geom::Coordinate::distance`, `geos::algorithm::Centroid::centroid3` and `geos::algorithm::Centroid::area2`.
 
 <pre>
 - &lt;geos::geometry::Geometry as geos::geometry::Geom&gt;::get_centroid
@@ -350,7 +353,7 @@ Contrast the perf report for _geo_ with the following report for _geos_. The cal
                            - <b>6.14% geos::geom::CoordinateSequence::operator[]</b>
 </pre>
 
-A look at the machine code for the particularly costly `geos::geom::Coordinate::distance` functions shows the compiler is unable to vectorize the computations. The costliest instructions are the non-vectorized double precision floating-point instructions (`movsd`, `addsd`, etc.):
+A look at the machine code for the particularly costly `geos::geom::Coordinate::distance` function shows that the compiler is unable to vectorize the computations. The costliest instructions are the non-vectorized double precision floating-point instructions (`movsd`, `addsd`, ...):
 
 <pre class="assembly">
 geos::geom::Coordinate::distance()
@@ -383,7 +386,7 @@ Percent
 
 ## Conclusion
 
-    TODO
+The three operations I benchmarked have increasingly complex algorithms, and an increasing gap in performance between _geo_ and _geos_. Analysis shows that the root cause of the performance gap is compiler optimization - function inlining, vectorization and skipped memory allocations - and the more complex algorithms amplify the effects of these optimizations. The answer to my question of Rust vs C++ performance might come down to the ability of each language, and it ecosystem, to nudge developers into writing programs that are more efficient and easier to optimize for the compiler. Rust's explicit memory lifetimes and traits-based polymorphism (instead of OO-style classes) are foundational innovations that might explain the edge in performance that _geo_ has over _geos_.
 
 
 ## Appendix
@@ -407,9 +410,11 @@ The benchmarks were run on a Google Cloud Project [e2-medium][gcp-e2-medium] VM 
 
 ### A note on compiler optimization settings
 
-Both `rustc` and `gcc` can optimize generated code to varying degrees. I chose `cargo`’s release profile for compiling Rust code, which uses the highest level (`-O3`) of optimization available in `rustc`. For _libgeos_, I set `CMAKE_BUILD_TYPE` to `RelWithDebInfo`. I used `RelWithDebInfo` instead of `Release` because symbol tables information is essential for any meaningful analysis using debugging and profiling tools (`gdb`, `perf`, `valgrind` etc.) Although the name suggests that this is a build profile similar to `Release` (which turns on `gcc`’s highest optimization level `-O3`) with debugging information added, `RelWithDebInfo` does not in fact set the same optimization level as `Release` on all platforms. LLVM documentation [states this problem][llvm-opt-flags], though it is easy to miss this difference. Also, `gcc`’s documentation [does not recommend using `-O3` optimization level][gcc-no-o3] by default as it can sometimes have the opposite effect of slowing programs down.
+Compiler optimization settings have a large impact on performance. I compiled all Rust code for this post with the highest optimization level available in `rustc`: `-O3` but compiled C++ code for _libgeos_ with `gcc`'s optimization flag set to `-O2` instead of the highest available `-O3`. This difference is the result of the default compiler flags used by the relevant tooling. `cargo`'s release profile enables the highest level of optimization, but `cmake`'s `RelWithDebInfo` setting [only enables `-O2`][llvm-opt-flags].
 
-That said, `gcc`’s `-O3` optimization level does try harder to vectorize loops, and in practice frequently improves upon the performance from `-O2`. For completeness, I compared the operations once again with `gcc`’s optimization level set to `-O3`. The following table shows the average (and standard deviation of) ratio of observed QPS for _geo_ compared to _geos_ for each of the three operations when libgeos is compiled with `-O2` and `-O3` optimization level respectively.
+I could have set `CMAKE_BUILD_TYPE` to `Release`, which enables `-O3` level of optimization, but it also disables symbol table generation needed for debugging and profiling tools (in particular for my use of `perf`). I could enable debugging symbols explicitly with `Release` (by setting `gcc`'s `-g` flag), but `gcc`'s documentation notes that call graphs may not be accurate with this level of optimization. Also, `gcc`'s documentation [does not recommend using `-O3` optimization level][gcc-no-o3] by default as it can sometimes have the opposite effect of slowing programs down.
+
+For completeness, I compared the operations once again with `gcc`’s optimization level set to `-O3`. The following table shows the average (and standard deviation of) ratio of observed QPS for _geo_ compared to _geos_ for each of the three operations when _libgeos_ is compiled with `-O2` and `-O3`:
 
 |                            | _geo_ `-O3` / _geos_ `-O2` | _geo_ `-O3` / _geos_ `-O3` |
 | -------------------------- | -------------------------- | -------------------------- |
@@ -417,7 +422,7 @@ That said, `gcc`’s `-O3` optimization level does try harder to vectorize loops
 | Area                       | 8.13 (std 0.10)            | 2.27 (std 0.02)            |
 | Centroid                   | 47.61 (std 1.39)           | 11.70 (std 0.27)           |
 
-`-O3` uniformly improves the performance of _geos_. In the case of minimum bounding rectangle, _geos_ even performs better than _geo_. But profiling with `perf` shows no qualitative difference in the CPU cycles distribution for _geos_. Thus, the analysis in this post is still applicable with the increased optimization level (though it is harder to follow due to missing symbol information).
+`-O3` uniformly improves the performance of _geos_. In the case of minimum bounding rectangle, _geos_ even performs better than _geo_. But profiling with `perf` shows that my root cause analyses still hold - the effect of function inlining is limited and memory allocations are not entirely removed, although `gcc` finds more opportunities to vectorize loops. Thus, the analysis in this post is still (mostly) applicable with the increased optimization level, though it is harder to follow due to missing symbol information.
 
 [llvm-opt-flags]: https://llvm.org/docs/CMake.html#frequently-used-cmake-variables
 [gcc-no-o3]: https://wiki.gentoo.org/wiki/GCC_optimization#-O
