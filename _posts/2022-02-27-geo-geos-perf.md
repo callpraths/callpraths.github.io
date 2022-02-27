@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Performance comparison of three simple geospatial algorithms"
-date:   2022-02-01 00:00:00 +0000
+date:   2022-02-27 00:00:00 +0000
 categories: geoscience
 style: geo-perf-comparison
 ---
