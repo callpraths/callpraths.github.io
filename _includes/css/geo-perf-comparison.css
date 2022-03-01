@@ -19,6 +19,7 @@
              "Courier New", monospace;
 }
 pre {
+    min-width: 30rem;
     margin-left: 4rem;
     margin-right: 4rem;
     border: none;
