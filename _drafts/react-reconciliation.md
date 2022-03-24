@@ -5,15 +5,13 @@ date:   2022-03-21 00:00:00 +0000
 style: react-reconciliation
 ---
 
-## Title TBD
-
 In a React web application, the React runtime maintains a tree of React elements. At a single point in time, the React element tree maps into the DOM element tree maintained by the browser. External events, such as user interaction, cause Component props and state to change. React assimilates these changes in two steps. First, React recreates the React element tree by calling the Components' `render` method[1] (or, equivalently, by invoking the functional Component body). Then, React recreates the DOM element tree to match the modified React element tree. React refers to this two-step process as reconciliation.
 
 Reconciliation occurs very frequently. After all, most web applications provide complex user experiences, bridging continuous user interactions to a changing backend data model. Updating the DOM element tree is computationally far costlier than updating the Component tree. Thus, avoiding unnecessary DOM element updates is essential for a responsive web application. Indeed, in the second step of reconciliation, React implements a fast heuristic algorithm to determine which DOM elements can be updated in-place instead of being recreated, and which DOM elements can be left untouched. React application developers can also prevent DOM element updates by avoiding reconciliation entirely. See one of [several][why-does-react-rerender] [blog-posts][common-react-mistakes] describing how you can avoid re-rendering Components.
 
 I have found that discussions of React application performance focus on the two approaches mentioned above: application developers avoid props and state changes, thereby preventing reconciliation entirely, and React efficiently maps the Component tree into DOM elements to minimize DOM updates. They ignore the intermediate step where React recreates the React element tree -- and the performance optimization pitfalls that entails. Consider the following example application:
 
-```js
+```jsx
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -79,7 +77,7 @@ The quote above references `keys`, React's solution to this performance, and cor
 
 As the next example shows, React can fail to correctly map React elements across rendering passes even in the absence of lists.
 
-```js
+```jsx
 class App extends React.Component {
   constructor(props) {
     super(props);

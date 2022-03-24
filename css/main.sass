@@ -1,7 +1,7 @@
 ---
 ---
 
-@import 'syntax-highlighting'
+@import './syntax.css'
 
 @import 'bourbon/bourbon'
 
@@ -16,10 +16,6 @@ $max-flow-width: 960px
 @mixin respond-to($breakpoint)
   @media only screen and (max-width: $breakpoint + px)
     @content
-
-// Only needed for syntax highlighting
-%vertical-rhythm
-  margin-bottom: $rs
 
 main
   display: block
@@ -557,7 +553,7 @@ code
 
 pre
   padding: 8px 12px
-  overflow-x: scroll
+  overflow-x: auto
   > code
     border: 0
     padding-right: 0
