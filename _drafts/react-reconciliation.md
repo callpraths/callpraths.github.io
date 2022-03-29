@@ -57,19 +57,21 @@ When this application first renders, React builds the React element tree and a c
 
 <div style="width: 100%; display: flex; flex-flow: row wrap; justify-content: center;">
 <pre>
-                                    ┌─────────────┐
-Src.line#2  ===> React.App =======> │     DOM.div │
-                    |               │       │     │
-                    |               │       │     │
-                    |               │    ┌──┴─────┼──┐
-                    |               │    │        │  │
-                    |               │ DOM.button  │  │
-                    |               └─────────────┘  │
-                    |                                │
-                    |                           ┌────┼───┐
-Src.line#14 ==> React.Counter ================> │    │   │
-                                                │ DOM.div│
-                                                └────────┘
+                                    ┌───────────────────────────┐
+Src.line#2  ===> React.App =======> │     DOM.div               │
+                    |               │       │                   │
+                    |               │       │                   │
+                    |               │    ┌──┴───────┬──────┐    │
+                    |               │    │          │      │    │
+                    |               │ DOM.button DOM.h3    │    │
+                    |               └──────────────────────│────┘
+                    |               ┌──────────────────────│────┐
+                    |               │                   DOM.div │
+Src.line#14 ==> React.Counter ====> │                      │    │
+                                    │    ┌────────────┬────┘    │
+                                    │ DOM.h3       DOM.button   │
+                                    │                           │
+                                    └───────────────────────────┘
 Key:
     Src.line#* : Source code line number
     React.*    : React elements
@@ -141,7 +143,7 @@ function App() {
         gap: "1rem",
       }
     },
-    React.createElement("h3", null, "App"),
+    React.createElement("h4", null, "App"),
     React.createElement(
       "button",
       {
