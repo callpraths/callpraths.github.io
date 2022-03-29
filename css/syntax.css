@@ -1,11 +1,6 @@
 .highlight code,
 .highlight pre {
     color: #fdce93;
-    background-color: #111111;
-}
-
-.highlight .hll {
-    background-color: #222;
 }
 
 .highlight .err {

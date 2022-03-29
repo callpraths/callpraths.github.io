@@ -1,3 +1,15 @@
 code {
     border: none;
 }
+
+pre {
+    border: none;
+}
+
+.highlight {
+    border: none;
+}
+
+.lineno {
+    border: none;
+}

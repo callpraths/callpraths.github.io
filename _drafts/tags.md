@@ -1,3 +1,8 @@
+---
+layout: post
+title:  "Tags - internal"
+date:   2132-03-21 00:00:00 +0000
+---
 # Tags
 
 - `#bookreview`: Is a book review
