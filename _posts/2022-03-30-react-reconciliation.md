@@ -9,7 +9,7 @@ The [React] runtime maintains a tree of Components that maps into the [DOM eleme
 
 I have found that most discussions of reconciliation focus on performance optimizations. Reconciliation occurs frequently. After all, most web applications provide complex user experiences, bridging continuous user interactions to a changing backend data model. In the second step of reconciliation, React reduces costly DOM tree updates by using a heuristic to determine which elements need to be recreated, can be updated in place, or can be left untouched. You, as a React application developer, have more control over the first step of reconciliation and can write your Components in a way that [avoids][why-does-react-rerender] [re-rendering][common-react-mistakes] them unnecessarily.
 
-**My thesis is that the problems caused by subtle problems in the first step of reconciliation are not limited to performance degradation. Instead, incorrect mapping of React Components across rendering passes can cause correctness issues where the internal state of Components is corrupted or lost.**
+**My thesis is that subtle problems in the first step of reconciliation are not limited to performance degradation. Incorrect mapping of React Components across rendering passes can cause correctness issues where the internal state of Components is corrupted or lost.**
 
 The following example brings out the said problem:
 
@@ -151,7 +151,8 @@ function App() {
         style: {
           minHeight: "1.25rem",
           backgroundColor: "#AAA",
-        }
+        },
+        className: "example-button"
       },
       React.createElement("h4", null, "Toggle!")
     ),
@@ -190,7 +191,8 @@ function Counter(props) {
         style: {
           minHeight: "1.25rem",
           backgroundColor: "#AAA",
-        }
+        },
+        className: "example-button"
       },
       React.createElement("h4", null, "+1"),
     ),
@@ -206,3 +208,8 @@ ReactDOM.render(
 );
 
 </script>
+<style>
+.example-button :hover {
+  cursor: pointer;
+}
+</style>
