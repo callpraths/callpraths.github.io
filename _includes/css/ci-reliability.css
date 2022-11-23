@@ -1,6 +1,29 @@
 .post .post-content p.img-caption {
     text-align: center;
-    font-size: 20px;
-    padding-left: 32px;
-    padding-right: 32px;
+    font-size: 1.25rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+table.timeline {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    table-layout: fixed;
+    margin-bottom: 1rem;
+}
+
+table.timeline th {
+    /* Same as body's background color */
+    color: #181818;
+    font-weight: bolder;
+    background-color: #AAAAAA;
+    text-align: start;
+    padding-left: 1rem;
+    width: 8rem;
+    border-radius: 0.2rem;
+}
+
+table.timeline td {
+    padding-left: 1rem;
 }
