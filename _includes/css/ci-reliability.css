@@ -34,3 +34,16 @@ table.ci-generic td.bitrate-img {
 table.ci-generic td.bitrate-img img {
     border-radius: 1rem;
 }
+
+.arrow {
+    border: solid #3A4E3E;
+    border-width: 0 12px 12px 0;
+    display: inline-block;
+    padding: 12px;
+    margin: 12px;
+}
+
+.right {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+}
