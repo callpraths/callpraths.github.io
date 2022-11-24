@@ -1,11 +1,11 @@
 ---
 layout: post
 title:  "Chapter 2: The test that would only pass two times out of five"
-date:   2022-11-02 00:00:00 +0000
-style: ci-reliability
+date:   2022-11-16 00:00:00 +0000
+style:  ci-reliability
 ---
 
-This is the second in a series of posts on my exploits measuring and squashing reliability woes in the Continuous Integration (CI) automation of the [Azure Communication Services](https://learn.microsoft.com/en-us/azure/communication-services/overview) [web UI library](https://azure.github.io/communication-ui-library/?path=/story/overview--page). Other posts in this series: [chapter 1](), [chapter 3]() and [conclusion]().
+This is the second in a series of posts on my exploits measuring and squashing reliability woes in the Continuous Integration (CI) automation of the [Azure Communication Services](https://learn.microsoft.com/en-us/azure/communication-services/overview) [web UI library](https://azure.github.io/communication-ui-library/?path=/story/overview--page). Other posts in this series: [chapter 1](/2022/11/15/ci-reliability-ch1.html), [chapter 3](/2022/11/17/ci-reliability-ch3.html) and [conclusion](/2022/11/18/ci-reliability-ch4.html).
 
 Soon after I started tracking my metric for test flakiness, the metric jumped to nearly 100% - most CI jobs were failing only because of test flakiness.
 

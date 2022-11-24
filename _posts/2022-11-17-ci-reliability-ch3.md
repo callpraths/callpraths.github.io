@@ -1,12 +1,12 @@
 ---
-layout: post
-title:  "Chapter 3: WebRTC has the last say"
-date:   2022-11-03 00:00:00 +0000
-style: ci-reliability
+layout:     post
+title:      "Chapter 3: WebRTC has the last say"
+date:       2022-11-17 00:00:00 +0000
+style:      ci-reliability
 usemathjax: true
 ---
 
-This is the third in a series of posts on my exploits measuring and squashing reliability woes in the Continuous Integration (CI) automation of the [Azure Communication Services](https://learn.microsoft.com/en-us/azure/communication-services/overview) [web UI library](https://azure.github.io/communication-ui-library/?path=/story/overview--page). Other posts in this series: [chapter 1](), [chapter 2]() and [conclusion]().
+This is the third in a series of posts on my exploits measuring and squashing reliability woes in the Continuous Integration (CI) automation of the [Azure Communication Services](https://learn.microsoft.com/en-us/azure/communication-services/overview) [web UI library](https://azure.github.io/communication-ui-library/?path=/story/overview--page). Other posts in this series: [chapter 1](/2022/11/15/ci-reliability-ch1.html), [chapter 2](/2022/11/16/ci-reliability-ch2.html) and [conclusion](/2022/11/18/ci-reliability-ch4.html).
 
 Having squashed the obvious catastrophic test flake, I was left with many tests with 90% - 95% success rate. The overall impact on the probability of CI job failure due to test flakiness was still large – a case of death by a thousand cuts. Spot checking some of the failures, I found that a large source of test failures was a timeout waiting for naturally slow operations – enumerating camera, microphone, and speaker devices in the browser; SDK initialization steps that involved complex over-the-network handshakes; and rendering of remote video streams. The default timeout of 5 seconds for these checks was too short on resource-constrained CI virtual machines. I proposed a [Pull Request to bump the relevant timeouts](https://github.com/Azure/communication-ui-library/pull/2155), trading potentially longer runtime for a higher success rate.
 

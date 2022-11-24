@@ -1,12 +1,12 @@
 ---
-layout: post
-title:  "Conclusion: What did we achieve and where do we go from here?"
-date:   2022-11-04 00:00:00 +0000
-style: ci-reliability
+layout:     post
+title:      "Conclusion: What did we achieve and where do we go from here?"
+date:       2022-11-18 00:00:00 +0000
+style:      ci-reliability
 usemathjax: true
 ---
 
-This is the last in a series of posts on my exploits measuring and squashing reliability woes in the Continuous Integration (CI) automation of the [Azure Communication Services](https://learn.microsoft.com/en-us/azure/communication-services/overview) [web UI library](https://azure.github.io/communication-ui-library/?path=/story/overview--page). Other posts in this series: [chapter 1](), [chapter 2]() and [chapter 3]().
+This is the last in a series of posts on my exploits measuring and squashing reliability woes in the Continuous Integration (CI) automation of the [Azure Communication Services](https://learn.microsoft.com/en-us/azure/communication-services/overview) [web UI library](https://azure.github.io/communication-ui-library/?path=/story/overview--page). Other posts in this series: [chapter 1](/2022/11/15/ci-reliability-ch1.html), [chapter 2](/2022/11/16/ci-reliability-ch2.html) and [chapter 3](/2022/11/17/ci-reliability-ch3.html).
 
 In March 2022, my team was struggling with engineering velocity because of a slow and unreliable Continuous Integration (CI) system. Worse still, we did not know, quantitatively, how bad the problem was nor had a good way to find opportunities for improvement. I took up the challenge and started by reporting key metadata for the CI jobs and defining top-line metrics to measure CI performance. The metrics first led me to the insight that the problem was not CI runtime, as initially assumed, but test flakiness. This data was also instrumental in spotlighting the tests that had a disproportionate effect on CI stability, finding failure patterns to zoom in on the root causes, and proving that my fixes were effective (and, at times, ineffective).
 

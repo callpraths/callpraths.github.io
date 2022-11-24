@@ -1,11 +1,11 @@
 ---
 layout: post
 title:  "Chapter 1: Your problem is not what you think it is"
-date:   2022-11-01 00:00:00 +0000
-style: ci-reliability
+date:   2022-11-15 00:00:00 +0000
+style:  ci-reliability
 ---
 
-This is the first in a series of posts on my exploits measuring and squashing reliability woes in the Continuous Integration (CI) automation of the [Azure Communication Services](https://learn.microsoft.com/en-us/azure/communication-services/overview) [web UI library](https://azure.github.io/communication-ui-library/?path=/story/overview--page). Other posts in this series: [chapter 2](), [chapter 3]() and [conclusion]().
+This is the first in a series of posts on my exploits measuring and squashing reliability woes in the Continuous Integration (CI) automation of the [Azure Communication Services](https://learn.microsoft.com/en-us/azure/communication-services/overview) [web UI library](https://azure.github.io/communication-ui-library/?path=/story/overview--page). Other posts in this series: [chapter 2](/2022/11/16/ci-reliability-ch2.html), [chapter 3](/2022/11/17/ci-reliability-ch3.html) and [conclusion](/2022/11/18/ci-reliability-ch4.html).
 
 [Azure Communication Services](https://learn.microsoft.com/en-us/azure/communication-services/overview) is a platform you can use to integrate communication services – video and telephony calling, chat and SMS messaging, email etc. – into your applications on the web, mobile or desktop. The offering includes a [web UI library](https://azure.github.io/communication-ui-library/?path=/story/overview--page) that provides UI controls of varying complexity on top of the platform. The UI library handles the complex interactions between UX, the browser and the platform services so that you can focus on branding and deep integration with your business flows.
 
