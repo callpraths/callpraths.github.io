@@ -67,7 +67,7 @@ Neither happened:
 
 The graph for the success rate of the affected test simply disappeared a day after I merged my fix. It took a combination of sleuthing and luck to figure out what was happening. tl;dr – CI was reporting test statistics only partially for 18 days before I noticed it because of my work on this flaky test. There were multiple twists in this fortnight of incomplete data:
 
-<table class="timeline">
+<table class="ci-generic" style="width: 80%">
     <tr>
         <th>July 14</th>
         <td>I merged a <a href="https://github.com/Azure/communication-ui-library/pull/2064">Pull Request</a> that started invoking Playwright twice instead of once. The second invocation started overwriting the test statistics generated from the first one. Thus, test statistics from the first invocation were lost.</td>

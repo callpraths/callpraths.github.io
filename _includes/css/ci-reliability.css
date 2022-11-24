@@ -5,15 +5,14 @@
     padding-right: 2rem;
 }
 
-table.timeline {
-    width: 90%;
+table.ci-generic {
     margin-left: auto;
     margin-right: auto;
     table-layout: fixed;
     margin-bottom: 1rem;
 }
 
-table.timeline th {
+table.ci-generic th {
     /* Same as body's background color */
     color: #181818;
     font-weight: bolder;
@@ -24,6 +23,14 @@ table.timeline th {
     border-radius: 0.2rem;
 }
 
-table.timeline td {
+table.ci-generic td {
     padding-left: 1rem;
+}
+
+table.ci-generic td.bitrate-img {
+    padding: 0.25rem;
+}
+
+table.ci-generic td.bitrate-img img {
+    border-radius: 1rem;
 }
