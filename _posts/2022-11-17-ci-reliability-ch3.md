@@ -6,7 +6,9 @@ style:      ci-reliability
 usemathjax: true
 ---
 
+{:refdef: class="post-subdued"}
 This is the third in a series of posts on my exploits measuring and squashing reliability woes in the Continuous Integration (CI) automation of the [Azure Communication Services](https://learn.microsoft.com/en-us/azure/communication-services/overview) [web UI library](https://azure.github.io/communication-ui-library/?path=/story/overview--page). Other posts in this series: [chapter 1](/2022/11/15/ci-reliability-ch1.html), [chapter 2](/2022/11/16/ci-reliability-ch2.html) and [conclusion](/2022/11/18/ci-reliability-ch4.html).
+{: refdef}
 
 Having squashed the obvious catastrophic test flake, I was left with many tests with 90% - 95% success rate. The overall impact on the probability of CI job failure due to test flakiness was still large – a case of death by a thousand cuts. Spot checking some of the failures, I found that a large source of test failures was a timeout waiting for naturally slow operations – enumerating camera, microphone, and speaker devices in the browser; SDK initialization steps that involved complex over-the-network handshakes; and rendering of remote video streams. The default timeout of 5 seconds for these checks was too short on resource-constrained CI virtual machines. I proposed a [Pull Request to bump the relevant timeouts](https://github.com/Azure/communication-ui-library/pull/2155), trading potentially longer runtime for a higher success rate.
 
@@ -79,9 +81,9 @@ Now that I had found a way to observe the effective bitrate, I was ready to expe
         <td class="bitrate-img"><img src="/assets/article_images/ci-reliability/ch3-bg-32-128-outbound-rtp.png"></td>
     </tr>
     <tr>
-        <td>2 / 2048</td>
-        <td class="bitrate-img"><img src="/assets/article_images/ci-reliability/ch3-bg-2-2048-screenshot.png"></td>
-        <td class="bitrate-img"><img src="/assets/article_images/ci-reliability/ch3-bg-2-2048-outbound-rtp.png"></td>
+        <td>16 / 256</td>
+        <td class="bitrate-img"><img src="/assets/article_images/ci-reliability/ch3-bg-16-256-screenshot.png"></td>
+        <td class="bitrate-img"><img src="/assets/article_images/ci-reliability/ch3-bg-16-256-outbound-rtp.png"></td>
     </tr>
     <tr>
         <td>8 / 512</td>
@@ -89,9 +91,9 @@ Now that I had found a way to observe the effective bitrate, I was ready to expe
         <td class="bitrate-img"><img src="/assets/article_images/ci-reliability/ch3-bg-8-512-outbound-rtp.png"></td>
     </tr>
     <tr>
-        <td>16 / 256</td>
-        <td class="bitrate-img"><img src="/assets/article_images/ci-reliability/ch3-bg-16-256-screenshot.png"></td>
-        <td class="bitrate-img"><img src="/assets/article_images/ci-reliability/ch3-bg-16-256-outbound-rtp.png"></td>
+        <td>2 / 2048</td>
+        <td class="bitrate-img"><img src="/assets/article_images/ci-reliability/ch3-bg-2-2048-screenshot.png"></td>
+        <td class="bitrate-img"><img src="/assets/article_images/ci-reliability/ch3-bg-2-2048-outbound-rtp.png"></td>
     </tr>
 </table>
 
@@ -128,3 +130,7 @@ The workaround was very effective. The number of video rendering timeouts during
 This example showcases why fixing flaky integration tests can be hard – there are large systems involved and flakiness can arise and propagate from any of them. Especially when testing applications and libraries at a high level of abstraction, it is easy to misunderstand the constraints of the underlying architecture and break them in ways that are not sensible in production environments.
 
 Unfortunately, there is no silver bullet here. When you start following the trail of a flaky test, it may go deep and into unchartered territory. Fortunately, there is no silver bullet here. When you start following the trail of a flaky test, it may go deep and into unchartered territory. It all comes down to a cost-benefit analysis. I maintain that the cost of having flaky tests is high in terms of loss of confidence in CI and engineering velocity in the long run, and that the benefit of following a trail successfully is joy unto itself.
+
+{:refdef: class="post-subdued"}
+Next post in this series: [Conclusion: What did we achieve and where do we go from here?](/2022/11/18/ci-reliability-ch4.html)
+{: refdef}

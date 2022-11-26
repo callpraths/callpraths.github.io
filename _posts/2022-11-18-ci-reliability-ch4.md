@@ -6,7 +6,9 @@ style:      ci-reliability
 usemathjax: true
 ---
 
+{:refdef: class="post-subdued"}
 This is the last in a series of posts on my exploits measuring and squashing reliability woes in the Continuous Integration (CI) automation of the [Azure Communication Services](https://learn.microsoft.com/en-us/azure/communication-services/overview) [web UI library](https://azure.github.io/communication-ui-library/?path=/story/overview--page). Other posts in this series: [chapter 1](/2022/11/15/ci-reliability-ch1.html), [chapter 2](/2022/11/16/ci-reliability-ch2.html) and [chapter 3](/2022/11/17/ci-reliability-ch3.html).
+{: refdef}
 
 In March 2022, my team was struggling with engineering velocity because of a slow and unreliable Continuous Integration (CI) system. Worse still, we did not know, quantitatively, how bad the problem was nor had a good way to find opportunities for improvement. I took up the challenge and started by reporting key metadata for the CI jobs and defining top-line metrics to measure CI performance. The metrics first led me to the insight that the problem was not CI runtime, as initially assumed, but test flakiness. This data was also instrumental in spotlighting the tests that had a disproportionate effect on CI stability, finding failure patterns to zoom in on the root causes, and proving that my fixes were effective (and, at times, ineffective).
 
@@ -38,3 +40,7 @@ I hope that I have convinced you that visibility into CI performance via metrics
 </p>
 
 Where to from here? Engineering excellence is a journey not a destination. Getting CI in order is [just the start](https://en.wikipedia.org/wiki/Broken_windows_theory). The harder task is maintaining the stability and runtime of CI so that it continues to be a good ally as we ship more features and delight more customers with the UI library while keeping the existing customers reliably happy. My cowboy metrics analysis setup was good for a couple months of iterative development, but will not stand the test of time when an entire team depends on easy access to CI metrics for the long run. Also, metrics are only good when used. The team is working on building the habit of leveraging similar metrics to keep an eye on CI. We now have the tools. We will soon have the processes. But above all, we shall always need, [CONSTANT VIGILANCE](https://github.com/Azure/communication-ui-library/pull/2220) 😉.
+
+{:refdef: class="post-subdued"}
+First post in this series: [Chapter 1: Your problem is not what you think it is](/2022/11/15/ci-reliability-ch1.html)
+{: refdef}

@@ -5,7 +5,9 @@ date:   2022-11-16 00:00:00 +0000
 style:  ci-reliability
 ---
 
+{:refdef: class="post-subdued"}
 This is the second in a series of posts on my exploits measuring and squashing reliability woes in the Continuous Integration (CI) automation of the [Azure Communication Services](https://learn.microsoft.com/en-us/azure/communication-services/overview) [web UI library](https://azure.github.io/communication-ui-library/?path=/story/overview--page). Other posts in this series: [chapter 1](/2022/11/15/ci-reliability-ch1.html), [chapter 3](/2022/11/17/ci-reliability-ch3.html) and [conclusion](/2022/11/18/ci-reliability-ch4.html).
+{: refdef}
 
 Soon after I started tracking my metric for test flakiness, the metric jumped to nearly 100% - most CI jobs were failing only because of test flakiness.
 
@@ -107,3 +109,7 @@ As a follow up to my data quality ninja work above, I added a supplementary grap
 </p>
 
 There is a moral here for your next data-driven engineering effort – work on data quality should be an essential and ongoing part of such a project. You should treat inferences from data analysis as provisional until validated by independent data, sampling, or actual system behavior. Also remember that supplementary data analysis is often key to a high-quality data analysis pipeline.
+
+{:refdef: class="post-subdued"}
+Next post in this series: [Chapter 3: WebRTC has the last say](/2022/11/17/ci-reliability-ch3.html)
+{: refdef}

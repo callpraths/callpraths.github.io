@@ -5,7 +5,9 @@ date:   2022-11-15 00:00:00 +0000
 style:  ci-reliability
 ---
 
+{:refdef: class="post-subdued"}
 This is the first in a series of posts on my exploits measuring and squashing reliability woes in the Continuous Integration (CI) automation of the [Azure Communication Services](https://learn.microsoft.com/en-us/azure/communication-services/overview) [web UI library](https://azure.github.io/communication-ui-library/?path=/story/overview--page). Other posts in this series: [chapter 2](/2022/11/16/ci-reliability-ch2.html), [chapter 3](/2022/11/17/ci-reliability-ch3.html) and [conclusion](/2022/11/18/ci-reliability-ch4.html).
+{: refdef}
 
 [Azure Communication Services](https://learn.microsoft.com/en-us/azure/communication-services/overview) is a platform you can use to integrate communication services – video and telephony calling, chat and SMS messaging, email etc. – into your applications on the web, mobile or desktop. The offering includes a [web UI library](https://azure.github.io/communication-ui-library/?path=/story/overview--page) that provides UI controls of varying complexity on top of the platform. The UI library handles the complex interactions between UX, the browser and the platform services so that you can focus on branding and deep integration with your business flows.
 
@@ -99,3 +101,7 @@ The success rate of tests was disturbingly low. A CI job only succeeds when all 
 This metric demonstrated that 2 out of every 5 CI runs were failing due to test flake. Considering that most Pull Requests executed more than 5 CI runs before they were merged (due to new commits), every Pull Request saw a CI failure purely due to flaky tests. This metric clearly corroborated the experience of the developers on the team. I used this metric to define a success criterion for the rest of my effort – drive the probability of a pre-submit CI job failing due to test flakiness to less than 5%.
 
 The remaining posts in this series showcase my journey making incremental improvements to hit that target. I have picked episodes where the methods I used to detect the problem or find a solution were particularly interesting, or where the problem was plain weird. I had a ton of fun in each of those micro-obsessions. I hope you also get some vicarious pleasure from reading about these little exploits!
+
+{:refdef: class="post-subdued"}
+Next post in this series: [Chapter 2: The test that would only pass two times out of five](/2022/11/16/ci-reliability-ch2.html)
+{: refdef}
