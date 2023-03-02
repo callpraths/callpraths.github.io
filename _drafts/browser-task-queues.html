@@ -1,0 +1,479 @@
+<head>
+  <script type="module">
+    import {
+      LitElement,
+      css,
+      html,
+    } from "https://cdn.jsdelivr.net/gh/lit/dist@2/core/lit-core.min.js";
+
+    class Chronote extends LitElement {
+      static get properties() {
+        return {
+          // store: 'setTimeout' | 'setTimeoutByParts' | 'awaitedPromise'
+          store: {type: String},
+          // Only effective when store === 'setTimeoutByParts'.
+          parts: {type: Number},
+          // Status: 'ready' | 'saving'
+          status: {type: String, state: true},
+          // notes: [{ timestamp: Date, text: String }]
+          notes: {type: Array, state: true},
+        }
+      }
+
+      // No styles in this component.
+      createRenderRoot() { return this;}
+   
+      connectedCallback() {        
+        super.connectedCallback();
+        this.status = 'ready';
+        this.notes = []
+      }
+
+      attributeChangedCallback(name, old, value) {
+        super.attributeChangedCallback(name, old, value);
+        
+        switch (name) {
+          case 'store':
+            switch (value) {
+              case 'setTimeout':
+                this.noteStore = new SetTimeoutNoteStore();
+                break;
+              case 'setTimoutByParts':
+                this.noteStore = new SetTimeoutByPartsNoteStore(this.parts ?? 1);
+                break;
+              case 'awaitedPromise':
+                this.noteStore = new AwaitedPromiseNoteStore();
+                break;
+            }
+            break;
+          case 'parts':
+            if (this.store === 'setTimeoutByParts') {
+              this.noteStore = new SetTimeoutByPartsNoteStore(this.parts ?? 1);
+            }
+            break;
+        }
+      }
+
+      addNote(event) {
+        const text = event.detail.note;
+        this.notes = [{ timestamp: new Date(), text }, ...this.notes];
+        this.saveNotes(this.notes);
+      }
+
+      async saveNotes() {
+        this.status = 'saving';
+        await this.noteStore.save();
+        this.status = 'ready';
+      }
+
+      render() {
+        return html`
+          <x-chronote-layout>
+            <x-chronote-clock slot="clock"></x-chronote-clock>
+            <x-chronote-status slot="status" status="${this.status}"></x-chronote-status>
+            <x-chronote-editor slot="editor" @x-chronote-add="${this.addNote}"></x-chronote-editor>
+            <x-chronote-list slot="list">
+              ${this.notes.map(note => html`
+                  <x-chronote-item .timestamp=${note.timestamp}>${note.text}</x-chronote-item>
+              `)}
+            </x-chronote-list>
+          </x-chronote-layout>
+        `;
+      }
+    }
+
+    class ChronoteLayout extends LitElement {
+      static get styles() {
+        return css`
+          #container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            min-width: 20rem;
+            min-height: 20rem;
+            width: 100%;
+            height: 100%;
+            padding: 0.5rem;
+            border-width: 0.0625rem;
+            border-radius: 0.25rem;
+            border-color: #aaaaaa;
+            border-style: solid;
+          }
+          #header {
+            background: #ffffff;
+            color: 181818;
+            margin-block-start: unset;
+            margin-block-end: 1rem;
+            padding: 0.5rem;
+            border-radius: 0.250rem;
+          }
+          #titlebar {
+            display: flex;
+            flex-direction: row;
+          }
+          #titlebar-buffer {
+            flex-grow: 1;
+            width: 1px;
+          }
+          #list {
+            flex-grow: 1;
+            flex-shrink: 1;
+            height: 1px;
+          }
+          slot {
+            display: inline-flex;
+          }
+          ::slotted(*) {
+            width: 100%
+          }
+        `;
+      }
+
+      render() {
+        return html`
+        <div id="container">
+            <h3 id="header">2,147,483,647 Chronotes</h3>
+            <div id="titlebar">
+              <slot name="clock" id="clock"></slot>
+              <div id="titlebar-buffer"></div>
+              <slot name="status" id="status"></slot>
+            </div>
+            <slot name="editor"></slot>
+            <slot name="list" id="list"></slot>
+        </div>
+        `;
+      }
+    }
+
+    class ChronoteStatus extends LitElement {
+      static get properties() {
+        return {
+          status: {
+            type: String, // Values: [saving, ready]
+          },
+        };
+      }
+      static get styles() {
+        return css`
+          .container {
+            display: inline-block;
+            position: relative;
+            width: 2rem;
+            height: 2rem;
+          }
+          .container div {
+            display: inline-block;
+            position: absolute;
+            left: 0.2rem;
+            width: 0.4rem;
+          }
+          .container div:nth-child(1) {
+            left: 0.2rem;
+            animation-delay: -0.24s;
+          }
+          .container div:nth-child(2) {
+            left: 0.8rem;
+            animation-delay: -0.12s;
+          }
+          .container div:nth-child(3) {
+            left: 1.4rem;
+            animation-delay: 0;
+          }
+          
+          .ready div {
+            background: rgb(100, 245, 191);
+            animation: none;
+            height: 0.8rem;
+            top: 0.6rem;
+          }
+
+          .saving div {
+            background: #fff;
+            animation: saving 0.6s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+          }
+          @keyframes saving {
+            0% {
+              top: 0.2rem;
+              height: 1.6rem;
+            }
+            50%, 100% {
+              top: 0.6rem;
+              height: 0.8rem;
+            }
+          }
+        `;
+      }
+      render() {
+        return html`<div class="container ${this.status}"><div></div><div></div><div></div></div>`;
+      }
+
+    }
+
+    class ChronoteClock extends LitElement {
+      static get properties() {
+        return {
+          now: { type: Date },
+        };
+      }
+      static get styles() {
+        return css`
+          #container {
+            background-color: rgb(24, 24, 24);
+            color: rgb(255, 255, 255);
+            border-radius: 0.25rem;
+            font-weight: bolder;
+            margin-right: 0.125rem;
+            min-width: 10rem;
+            padding: 0.25rem;
+          }
+        `;
+      }
+      connectedCallback() {
+        super.connectedCallback();
+        this.timer = setInterval(this.tick.bind(this), 1000);
+        this.tick();
+      }
+      disconnectedCallback() {
+        this.timer && clearInterval(this.timer);
+        this.timer = undefined;
+        super.disconnectedCallback();
+      }
+      tick() {
+        this.now = new Date();
+      }
+      render() {
+        return html`
+          <div id="container">
+            ${this.now.getHours()}:${this.now.getMinutes()}:${this.now.getSeconds()}
+          </div>
+        `;
+      }
+    }
+
+    class ChronoteEditor extends LitElement {
+      static get styles() {
+        return css`
+          #container {
+            border-width: 0.125rem;
+            border-radius: 0.25rem;
+            border-color: #cccccc;
+            border-style: solid;
+            background-color: rgb(24, 24, 24);
+            color: rgb(187, 187, 187);
+            padding: 0.125rem;
+            display: flex;
+            flex-direction: row;
+          }
+          #text {
+            flex-grow: 1;
+            background-color: inherit;
+            border-style: none;
+            color: inherit;
+            margin-left: 0.125rem;
+          }
+          #text:focus {
+            outline: none;
+          }
+          #accept {
+            background-color: rgb(224, 251, 241);
+            border-radius: 0.5rem;
+            color: #181818;
+            min-width: 3rem;
+            text-align: center;
+          }
+        `;
+      }
+      render() {
+        return html`
+          <div id="container">
+            <input type="text" id="text" name="text" placeholder="Quick, add a note..." required @keydown=${this.handleKeyPress}></input>
+            <button id="accept" @click="${this.accept}">✓</button>
+          </div>
+        `;
+      }
+      handleKeyPress(event) {
+        // Enter
+        if (event.keyCode == 13) {
+          this.accept();
+        }
+      }
+      accept() {
+        const textBox = this.shadowRoot.getElementById("text");
+        const note = textBox.value;
+        if (note === '') {
+          return;
+        }
+
+        textBox.value = "";
+        this.dispatchEvent(
+          new CustomEvent("x-chronote-add", {
+            detail: {
+              note,
+            },
+            bubbles: true,
+            composed: true,
+          })
+        );
+      }
+    }
+
+    class ChronoteList extends LitElement {
+      static get styles() {
+        return css`
+          #container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.125rem;
+            overflow-y: scroll;
+            width: 100%;
+            height: 100%;
+          }
+          #container::-webkit-scrollbar {
+            width: 0px;
+          }
+
+        `;
+      }
+      render() {
+        return html`<div id="container"><slot></slot></div>`;
+      }
+    }
+
+    class ChronoteItem extends LitElement {
+      static get properties() {
+        return {
+          timestamp: { type: Date },
+        };
+      }
+      static get styles() {
+        return css`
+          #container {
+            color: #181818;
+            display: flex;
+            flex-direction: row;
+          }
+          #timestamp {
+            background-color: #aaaaaa;
+            border-radius: 0.25rem;
+            font-weight: bolder;
+            margin-right: 0.125rem;
+            min-width: 10rem;
+            padding: 0.25rem;
+          }
+          #note {
+            background-color: #cccccc;
+            border-radius: 0.25rem;
+            flex-grow: 1;
+            padding: 0.25rem;
+          }
+        `;
+      }
+      render() {
+        return html` <div id="container">
+          <div id="timestamp">${this.renderTimestamp()}</div>
+          <div id="note"><slot></slot></div>
+        </div>`;
+      }
+      renderTimestamp() {
+        const t = this.timestamp;
+        if (!t) {
+          return html``;
+        }
+        return html`${t.getHours()}:${t.getMinutes()}:${t.getSeconds()}`;
+      }
+    }
+
+    class SetTimeoutNoteStore {
+      async save(notes) {
+        if (this.saveTimerHandle) {
+          clearTimeout(this.saveTimerHandle);
+        }
+        return new Promise((resolve) => {          
+          this.saveTimerHandle = setTimeout(() => {
+            compress(notes);
+            this.saveTimerHandle = undefined;
+            resolve();
+          }, 0);
+        }); 
+      }
+    }
+
+    class SetTimeoutByPartsNoteStore {
+      constructor(parts) {
+        this.parts = parts;
+        this.saveTimerHandles = new Array(parts);
+      }
+      async save(notes) {
+        this.saveTimerHandles.forEach((handle) => handle && clearTimeout(handle));
+        
+        return Promise.all([...Array(this.parts).keys()].map(
+          (i) => new Promise((resolve) => {
+            this.saveTimerHandles[i] = setTimeout(() => {
+              compressParts(notes, this.parts, i);
+              this.saveTimerHandles[i] = undefined;
+              resolve();
+            }, 0);            
+          })
+        ));
+      }
+    }
+
+    class AwaitedPromiseNoteStore {
+      async save(notes) {
+        return await this.saveInternal();
+      }
+
+      async saveInternal(notes) {
+        return new Promise(resolve => {
+          compress(notes);
+          resolve();
+        });
+      }
+    }
+
+    function compress(notes) {
+      const start = new Date();
+      while(new Date() - start < 2000) {}
+    }
+    
+    function compressParts(notes, parts, _i) {
+      const start = new Date();
+      while(new Date() - start < 2000/parts) {}
+    }
+
+    function defineComponents() {
+      window.customElements.define("x-chronote-status", ChronoteStatus);
+      window.customElements.define("x-chronote-item", ChronoteItem);
+      window.customElements.define("x-chronote-list", ChronoteList);
+      window.customElements.define("x-chronote-editor", ChronoteEditor);
+      window.customElements.define("x-chronote-clock", ChronoteClock);
+      window.customElements.define("x-chronote-layout", ChronoteLayout);
+      window.customElements.define("x-chronote", Chronote);
+    }
+    
+    defineComponents();
+  </script>
+</head>
+
+<style>
+  body {
+    background-color: rgb(24, 24, 24);
+  }
+</style>
+
+<body>
+  <div style="display: flex; flex-direction: row; gap: 2rem">
+    <div style="display: block; width: 20rem; height: 30rem;">
+      <h3 style="color: white">setTimeoutByParts(50)</h3>
+      <x-chronote store="setTimeoutByParts" parts="50"></x-chronote>
+    </div>
+    <div style="display: block; width: 20rem; height: 30rem;">
+      <h3 style="color: white">setTimeout</h3>
+      <x-chronote store="setTimeout"></x-chronote>
+    </div>
+    <div style="display: block; width: 20rem; height: 30rem;">
+      <h3 style="color: white">awaitedPromise</h3>
+      <x-chronote store="awaitedPromise"></x-chronote>
+    </div>
+  </div>
+</body>
