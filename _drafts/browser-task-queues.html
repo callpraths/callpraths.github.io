@@ -20,6 +20,11 @@
         };
       }
 
+      constructor() {
+        super();
+        this.timingReporter = new TimingReporter(this);
+      }
+
       // No styles in this component.
       createRenderRoot() {
         return this;
@@ -48,6 +53,12 @@
               case "awaitedPromise":
                 this.noteStore = new AwaitedPromiseNoteStore(this);
                 break;
+              case "unawaitedPromise":
+                this.noteStore = new UnawaitedPromiseNoteStore(this);
+                break;
+              case "unawaitedUnmeasuredPromise":
+                this.noteStore = new UnawaitedUnmeasuredPromiseNoteStore(this);
+                break;
             }
             break;
           case "parts":
@@ -66,7 +77,13 @@
 
       async saveNotes() {
         this.status = "saving";
+
+        const stopTimer = this.timingReporter.startTimer(
+          "chronotes-save-notes"
+        );
         await this.noteStore.save();
+        stopTimer();
+
         this.status = "ready";
       }
 
@@ -420,7 +437,7 @@
             resolve();
           }, 0);
         });
-        
+
       }
     }
 
@@ -470,6 +487,46 @@
       }
     }
 
+    class UnawaitedPromiseNoteStore {
+      constructor(elem) {
+        this.timingReporter = new TimingReporter(elem);
+      }
+
+      async save(notes) {
+        const stopTimer = this.timingReporter.startTimer(
+          "unawaited-promise-note-store-save"
+        );
+        const result = this.saveInternal();
+        stopTimer();
+        return result;
+      }
+
+      async saveInternal(notes) {
+        await prepare(notes);
+        compress(notes);
+      }
+    }
+
+    class UnawaitedUnmeasuredPromiseNoteStore {
+      constructor(elem) {
+        this.timingReporter = new TimingReporter(elem);
+      }
+
+      async save(notes) {
+        const stopTimer = this.timingReporter.startTimer(
+          "unawaited-unmeasured-promise-note-store-save"
+        );
+        this.saveInternal();
+        stopTimer();
+      }
+
+      async saveInternal(notes) {
+        await prepare(notes);
+        compress(notes);
+      }
+    }
+
+
     class TimingReporter {
       constructor(elem) {
         this.elem = elem;
@@ -494,6 +551,14 @@
           );
         };
       }
+    }
+
+    async function prepare(notes) {
+        return new Promise(resolve => {
+            const start = new Date();
+            while (new Date() - start < 100) {}
+            resolve();
+        });
     }
 
     function compress(notes) {
@@ -550,7 +615,20 @@
         <x-chronote id="xc-awaited-promise" store="awaitedPromise"></x-chronote>
       </div>
     </div>
+    <div>
+        <h3 style="color: white">unawaitedPromise</h3>
+        <div style="width: 20rem; height: 30rem">
+          <x-chronote id="xc-unawaited-promise" store="unawaitedPromise"></x-chronote>
+        </div>
+      </div>
   </div>
+  <div>
+    <h3 style="color: white">unawaitedUnmeasuredPromise</h3>
+    <div style="width: 20rem; height: 30rem">
+      <x-chronote id="xc-unawaited-unmeasured-promise" store="unawaitedUnmeasuredPromise"></x-chronote>
+    </div>
+  </div>
+</div>
   <div style="width: 80rem; height: 100%; margin-top: 5rem">
     <canvas id="perf-report-graph"></canvas>
   </div>
@@ -590,6 +668,11 @@
                 includeBounds: false,
               },
             },
+            y: {
+                type: "linear",
+                min: 0,
+                max: 2500,
+            }
           },
           responsive: true,
           plugins: {
@@ -638,6 +721,6 @@
       return dataset;
     }
 
-    renderPerfGraph("perf-report-graph", ["xc-awaited-promise", "xc-set-timeout"]);
+    renderPerfGraph("perf-report-graph", ["xc-awaited-promise", "xc-unawaited-promise", "xc-unawaited-unmeasured-promise", "xc-set-timeout"]);
   </script>
 </body>
