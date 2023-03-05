@@ -10,44 +10,48 @@
       static get properties() {
         return {
           // store: 'setTimeout' | 'setTimeoutByParts' | 'awaitedPromise'
-          store: {type: String},
+          store: { type: String },
           // Only effective when store === 'setTimeoutByParts'.
-          parts: {type: Number},
+          parts: { type: Number },
           // Status: 'ready' | 'saving'
-          status: {type: String, state: true},
+          status: { type: String, state: true },
           // notes: [{ timestamp: Date, text: String }]
-          notes: {type: Array, state: true},
-        }
+          notes: { type: Array, state: true },
+        };
       }
 
       // No styles in this component.
-      createRenderRoot() { return this;}
-   
-      connectedCallback() {        
+      createRenderRoot() {
+        return this;
+      }
+
+      connectedCallback() {
         super.connectedCallback();
-        this.status = 'ready';
-        this.notes = []
+        this.status = "ready";
+        this.notes = [];
       }
 
       attributeChangedCallback(name, old, value) {
         super.attributeChangedCallback(name, old, value);
-        
+
         switch (name) {
-          case 'store':
+          case "store":
             switch (value) {
-              case 'setTimeout':
-                this.noteStore = new SetTimeoutNoteStore();
+              case "setTimeout":
+                this.noteStore = new SetTimeoutNoteStore(this);
                 break;
-              case 'setTimoutByParts':
-                this.noteStore = new SetTimeoutByPartsNoteStore(this.parts ?? 1);
+              case "setTimoutByParts":
+                this.noteStore = new SetTimeoutByPartsNoteStore(
+                  this.parts ?? 1
+                );
                 break;
-              case 'awaitedPromise':
-                this.noteStore = new AwaitedPromiseNoteStore();
+              case "awaitedPromise":
+                this.noteStore = new AwaitedPromiseNoteStore(this);
                 break;
             }
             break;
-          case 'parts':
-            if (this.store === 'setTimeoutByParts') {
+          case "parts":
+            if (this.store === "setTimeoutByParts") {
               this.noteStore = new SetTimeoutByPartsNoteStore(this.parts ?? 1);
             }
             break;
@@ -61,21 +65,31 @@
       }
 
       async saveNotes() {
-        this.status = 'saving';
+        this.status = "saving";
         await this.noteStore.save();
-        this.status = 'ready';
+        this.status = "ready";
       }
 
       render() {
         return html`
           <x-chronote-layout>
             <x-chronote-clock slot="clock"></x-chronote-clock>
-            <x-chronote-status slot="status" status="${this.status}"></x-chronote-status>
-            <x-chronote-editor slot="editor" @x-chronote-add="${this.addNote}"></x-chronote-editor>
+            <x-chronote-status
+              slot="status"
+              status="${this.status}"
+            ></x-chronote-status>
+            <x-chronote-editor
+              slot="editor"
+              @x-chronote-add="${this.addNote}"
+            ></x-chronote-editor>
             <x-chronote-list slot="list">
-              ${this.notes.map(note => html`
-                  <x-chronote-item .timestamp=${note.timestamp}>${note.text}</x-chronote-item>
-              `)}
+              ${this.notes.map(
+                (note) => html`
+                  <x-chronote-item .timestamp=${note.timestamp}
+                    >${note.text}</x-chronote-item
+                  >
+                `
+              )}
             </x-chronote-list>
           </x-chronote-layout>
         `;
@@ -105,7 +119,7 @@
             margin-block-start: unset;
             margin-block-end: 1rem;
             padding: 0.5rem;
-            border-radius: 0.250rem;
+            border-radius: 0.25rem;
           }
           #titlebar {
             display: flex;
@@ -124,14 +138,14 @@
             display: inline-flex;
           }
           ::slotted(*) {
-            width: 100%
+            width: 100%;
           }
         `;
       }
 
       render() {
         return html`
-        <div id="container">
+          <div id="container">
             <h3 id="header">2,147,483,647 Chronotes</h3>
             <div id="titlebar">
               <slot name="clock" id="clock"></slot>
@@ -140,7 +154,7 @@
             </div>
             <slot name="editor"></slot>
             <slot name="list" id="list"></slot>
-        </div>
+          </div>
         `;
       }
     }
@@ -179,7 +193,7 @@
             left: 1.4rem;
             animation-delay: 0;
           }
-          
+
           .ready div {
             background: rgb(100, 245, 191);
             animation: none;
@@ -196,7 +210,8 @@
               top: 0.2rem;
               height: 1.6rem;
             }
-            50%, 100% {
+            50%,
+            100% {
               top: 0.6rem;
               height: 0.8rem;
             }
@@ -204,9 +219,12 @@
         `;
       }
       render() {
-        return html`<div class="container ${this.status}"><div></div><div></div><div></div></div>`;
+        return html`<div class="container ${this.status}">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>`;
       }
-
     }
 
     class ChronoteClock extends LitElement {
@@ -300,7 +318,7 @@
       accept() {
         const textBox = this.shadowRoot.getElementById("text");
         const note = textBox.value;
-        if (note === '') {
+        if (note === "") {
           return;
         }
 
@@ -331,7 +349,6 @@
           #container::-webkit-scrollbar {
             width: 0px;
           }
-
         `;
       }
       render() {
@@ -384,17 +401,26 @@
     }
 
     class SetTimeoutNoteStore {
+      constructor(elem) {
+        this.timingReporter = new TimingReporter(elem);
+      }
+
       async save(notes) {
+        const stopTimer = this.timingReporter.startTimer(
+          "set-timeout-note-store-save"
+        );
         if (this.saveTimerHandle) {
           clearTimeout(this.saveTimerHandle);
         }
-        return new Promise((resolve) => {          
+        return new Promise((resolve) => {
           this.saveTimerHandle = setTimeout(() => {
             compress(notes);
             this.saveTimerHandle = undefined;
+            stopTimer();
             resolve();
           }, 0);
-        }); 
+        });
+        
       }
     }
 
@@ -404,41 +430,80 @@
         this.saveTimerHandles = new Array(parts);
       }
       async save(notes) {
-        this.saveTimerHandles.forEach((handle) => handle && clearTimeout(handle));
-        
-        return Promise.all([...Array(this.parts).keys()].map(
-          (i) => new Promise((resolve) => {
-            this.saveTimerHandles[i] = setTimeout(() => {
-              compressParts(notes, this.parts, i);
-              this.saveTimerHandles[i] = undefined;
-              resolve();
-            }, 0);            
-          })
-        ));
+        this.saveTimerHandles.forEach(
+          (handle) => handle && clearTimeout(handle)
+        );
+
+        return Promise.all(
+          [...Array(this.parts).keys()].map(
+            (i) =>
+              new Promise((resolve) => {
+                this.saveTimerHandles[i] = setTimeout(() => {
+                  compressParts(notes, this.parts, i);
+                  this.saveTimerHandles[i] = undefined;
+                  resolve();
+                }, 0);
+              })
+          )
+        );
       }
     }
 
     class AwaitedPromiseNoteStore {
+      constructor(elem) {
+        this.timingReporter = new TimingReporter(elem);
+      }
+
       async save(notes) {
-        return await this.saveInternal();
+        const stopTimer = this.timingReporter.startTimer(
+          "awaited-promise-note-store-save"
+        );
+        await this.saveInternal();
+        stopTimer();
       }
 
       async saveInternal(notes) {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
           compress(notes);
           resolve();
         });
       }
     }
 
+    class TimingReporter {
+      constructor(elem) {
+        this.elem = elem;
+      }
+
+      startTimer(tag) {
+        const startTag = `${tag}--start`;
+        const stopTag = `${tag}--stop`;
+        performance.mark(startTag);
+        return () => {
+          performance.mark(stopTag);
+          const measure = performance.measure(tag, startTag, stopTag);
+          this.elem.dispatchEvent(
+            new CustomEvent("report-perf-measurement", {
+              detail: {
+                name: measure.name,
+                duration: measure.duration,
+              },
+              bubbles: true,
+              composed: true,
+            })
+          );
+        };
+      }
+    }
+
     function compress(notes) {
       const start = new Date();
-      while(new Date() - start < 2000) {}
+      while (new Date() - start < 2000) {}
     }
-    
+
     function compressParts(notes, parts, _i) {
       const start = new Date();
-      while(new Date() - start < 2000/parts) {}
+      while (new Date() - start < 2000 / parts) {}
     }
 
     function defineComponents() {
@@ -450,7 +515,7 @@
       window.customElements.define("x-chronote-layout", ChronoteLayout);
       window.customElements.define("x-chronote", Chronote);
     }
-    
+
     defineComponents();
   </script>
 </head>
@@ -462,18 +527,117 @@
 </style>
 
 <body>
-  <div style="display: flex; flex-direction: row; gap: 2rem">
-    <div style="display: block; width: 20rem; height: 30rem;">
+  <div style="display: flex; flex-direction: row; gap: 2rem; margin: 2rem">
+    <div>
       <h3 style="color: white">setTimeoutByParts(50)</h3>
-      <x-chronote store="setTimeoutByParts" parts="50"></x-chronote>
+      <div style="display: block; width: 20rem; height: 30rem">
+        <x-chronote
+          id="xc-set-timeout-by-parts"
+          store="setTimeoutByParts"
+          parts="50"
+        ></x-chronote>
+      </div>
     </div>
-    <div style="display: block; width: 20rem; height: 30rem;">
+    <div>
       <h3 style="color: white">setTimeout</h3>
-      <x-chronote store="setTimeout"></x-chronote>
+      <div style="display: block; width: 20rem; height: 30rem">
+        <x-chronote id="xc-set-timeout" store="setTimeout"></x-chronote>
+      </div>
     </div>
-    <div style="display: block; width: 20rem; height: 30rem;">
+    <div>
       <h3 style="color: white">awaitedPromise</h3>
-      <x-chronote store="awaitedPromise"></x-chronote>
+      <div style="width: 20rem; height: 30rem">
+        <x-chronote id="xc-awaited-promise" store="awaitedPromise"></x-chronote>
+      </div>
     </div>
   </div>
+  <div style="width: 80rem; height: 100%; margin-top: 5rem">
+    <canvas id="perf-report-graph"></canvas>
+  </div>
+
+  <script type="module">
+    // import * as chartJs from 'https://esm.run/chart.js';
+    import * as chartJs from "https://cdn.jsdelivr.net/npm/chart.js@4.2.1/+esm";
+    chartJs.Chart.register(...chartJs.registerables);
+
+    function renderPerfGraph(targetId, sourceIds) {
+      const target = document.getElementById(targetId);
+
+      const palette = [
+          "rgb(33, 87, 36)",
+          "rgb(223, 187, 55)",
+          "rgb(221, 150, 70)",
+          "rgb(204, 73, 71)",
+          "rgb(70, 179, 103)",
+        ];
+
+      const chart = new chartJs.Chart(target, {
+        type: "scatter",
+        data: { datasets: [] },
+        options: {
+          elements: {
+            point: {
+              borderWidth: 4,
+            },
+          },
+          scales: {
+            x: {
+              type: "linear",
+              min: 0,
+              max: 10.5,
+              ticks: {
+                stepSize: 1,
+                includeBounds: false,
+              },
+            },
+          },
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "top",
+            },
+            title: {
+              display: true,
+              text: "Various perf measurements",
+            },
+          },
+        },
+      });
+
+      sourceIds.forEach((sourceId) => {
+        const source = document.getElementById(sourceId);
+        source.addEventListener("report-perf-measurement", (ev) => {
+          const { name: label, duration } = ev.detail;
+          console.log(`Received perf measurement for ${label} - ${duration}`);
+          // We are demonstrating UI thread freezes in some of the examples.
+          // Always schedule a new task so any animations for graph update don't freeze as well.
+          setTimeout(() => {
+            const dataset = findOrCreateDataset(chart, label, palette.shift());
+            // Shift first so we get the right value for 'x'.
+            if (dataset.data.length == 10) {
+              dataset.data.shift();
+              dataset.data.forEach((p) => {
+                p.x = p.x - 1;
+              });
+            }
+            dataset.data.push({ x: dataset.data.length + 1, y: duration });
+            chart.update();
+          }, 0);
+        });
+      });
+    }
+
+    function findOrCreateDataset(chart, label, color) {
+      for (const dataset of chart.data.datasets) {
+        if (dataset.label === label) {
+          return dataset;
+        }
+      }
+      const dataset = { label, data: [], borderColor: color };
+      chart.data.datasets.push(dataset);
+      return dataset;
+    }
+
+    renderPerfGraph("perf-report-graph", ["xc-awaited-promise", "xc-set-timeout"]);
+  </script>
 </body>
