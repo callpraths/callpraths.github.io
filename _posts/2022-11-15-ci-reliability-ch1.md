@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Chapter 1: Your problem is not what you think it is"
+title:  "CI reliability #1: Your problem is not what you think it is"
 date:   2022-11-15 00:00:00 +0000
 style:  ci-reliability
 ---

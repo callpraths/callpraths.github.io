@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Chapter 2: The test that would only pass two times out of five"
+title:  "CI reliability #2: The test that would only pass two times out of five"
 date:   2022-11-16 00:00:00 +0000
 style:  ci-reliability
 ---

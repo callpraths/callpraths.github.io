@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Chapter 3: WebRTC has the last say"
+title:      "CI reliability #3: WebRTC has the last say"
 date:       2022-11-17 00:00:00 +0000
 style:      ci-reliability
 usemathjax: true
