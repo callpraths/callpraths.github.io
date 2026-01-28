@@ -9,7 +9,6 @@ import { SetTimeoutByPartsNoteStore } from "../store/set-timeout-by-parts-note-s
 import { AwaitedPromiseNoteStore } from "../store/awaited-promise-note-store.js";
 import { UnawaitedPromiseNoteStore } from "../store/unawaited-promise-note-store.js";
 import { UnawaitedUnmeasuredPromiseNoteStore } from "../store/unawaited-unmeasured-promise-note-store.js";
-import { TimingReporter } from "../store/timing-reporter.js";
 
 export class Chronote extends LitElement {
     static get properties() {
@@ -27,7 +26,6 @@ export class Chronote extends LitElement {
 
     constructor() {
         super();
-        this.timingReporter = new TimingReporter(this);
     }
 
     // No styles in this component.
@@ -68,7 +66,7 @@ export class Chronote extends LitElement {
                 break;
             case "parts":
                 if (this.store === "setTimeoutByParts") {
-                    this.noteStore = new SetTimeoutByPartsNoteStore(this.parts ?? 1);
+                    this.noteStore = new SetTimeoutByPartsNoteStore(this, this.parts ?? 1);
                 }
                 break;
         }
@@ -83,11 +81,7 @@ export class Chronote extends LitElement {
     async saveNotes() {
         this.status = "saving";
 
-        const stopTimer = this.timingReporter.startTimer(
-            "chronotes-save-notes"
-        );
         await this.noteStore.save();
-        stopTimer();
 
         this.status = "ready";
     }

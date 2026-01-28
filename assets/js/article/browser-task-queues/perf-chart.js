@@ -85,4 +85,4 @@ function findOrCreateDataset(chart, label, color) {
     return dataset;
 }
 
-renderPerfGraph("perf-report-graph", ["xc-awaited-promise", "xc-unawaited-promise", "xc-unawaited-unmeasured-promise", "xc-set-timeout"]);
+renderPerfGraph("perf-report-graph", ["xc-awaited-promise", "xc-unawaited-promise", "xc-unawaited-unmeasured-promise", "xc-set-timeout", "xc-set-timeout-by-parts"]);
