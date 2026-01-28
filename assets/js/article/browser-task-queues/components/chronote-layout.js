@@ -1,18 +1,18 @@
 import {
-    LitElement,
-    css,
-    html,
+  LitElement,
+  css,
+  html,
 } from "https://cdn.jsdelivr.net/gh/lit/dist@2/core/lit-core.min.js";
 
 export class ChronoteLayout extends LitElement {
-    static get styles() {
-        return css`
+  static get styles() {
+    return css`
           #container {
             display: flex;
             flex-direction: column;
             gap: 0.25rem;
             min-width: 20rem;
-            min-height: 20rem;
+            min-height: 15rem;
             width: 100%;
             height: 100%;
             padding: 0.5rem;
@@ -23,7 +23,7 @@ export class ChronoteLayout extends LitElement {
           }
           #header {
             background: #ffffff;
-            color: 181818;
+            color: #181818;
             margin-block-start: unset;
             margin-block-end: 1rem;
             padding: 0.5rem;
@@ -49,10 +49,10 @@ export class ChronoteLayout extends LitElement {
             width: 100%;
           }
         `;
-    }
+  }
 
-    render() {
-        return html`
+  render() {
+    return html`
           <div id="container">
             <h3 id="header">2,147,483,647 Chronotes</h3>
             <div id="titlebar">
@@ -64,5 +64,5 @@ export class ChronoteLayout extends LitElement {
             <slot name="list" id="list"></slot>
           </div>
         `;
-    }
+  }
 }

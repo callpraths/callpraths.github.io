@@ -1,4 +1,4 @@
-const TIME_TO_BLOCK_MS = 2000;
+const TIME_TO_BLOCK_MS = 4000;
 
 // "compress" the notes.
 //
