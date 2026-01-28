@@ -28,9 +28,11 @@ Let's take a quick look at the challenges / fun stuff I got to tackle:
 - Related to the minimal UI design of `hyperfine`, it currently uses the [`console`] and [`indicatif`] crates to update the terminal. These crates' interactions with the terminal don't play very well with `ratatui`'s. So I had to write some bridging code to continue to render hyperfine's standard output to a `ratatui` block in the UI. This glue code works, but is definitely FHL quality 😉
     - Also, `hyperfine` currently directly writes to the console, both via `print!`-style macros and via the crates above. I had to add a layer of indirection to be able to redirect that output to the appropriate part of the UI.
 
+For a look under the hood, see this [abanandoned pull request](https://github.com/callpraths/hyperfine/pull/1).
+
 A note on the use of LLMs: I used Google's Antigravity IDE with the Gemini suite of models to aid in this hack. First, I used it to summarize the architecture of the repo so I could onboard quickly. I _did not_ use LLMs when setting up the basic approach: process management & first-pass implementation. I then relied heavily on LLMs for refactoring and addition of small features, mostly vibe-coding these small additions. I find this method of leveraging LLMs to be very effective - it makes sure that I'm in the driving seat and learning a lot while also providing a multiplier on the execution velocity.
 
-So much for fun's sake! A natural next step here for me is to find ways to truly contribute back to `hyperfine` now that I'm comfortable with its inner workings ☺️
+Well, that was fun! A natural next step here for me is to find ways to truly contribute back to `hyperfine` now that I'm comfortable with its inner workings ☺️
 
 [tui]: https://en.wikipedia.org/wiki/Text-based_user_interface
 [geo-geos-perf-study]: https://callpraths.github.io/geoscience/2022/02/27/geo-geos-perf.html
