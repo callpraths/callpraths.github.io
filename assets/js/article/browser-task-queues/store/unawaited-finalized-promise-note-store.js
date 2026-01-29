@@ -1,22 +1,21 @@
 import { TimingReporter } from "./timing-reporter.js";
-import { compress, prepare } from "./common.js";
+import { compress, prepare, finalize } from "./common.js";
 
-export class AwaitedPromiseNoteStore {
+export class UnawaitedFinalizedPromiseNoteStore {
     constructor(elem) {
         this.timingReporter = new TimingReporter(elem);
     }
 
-    // ❗Save is now asynchronous.❗
     async save(notes) {
         const stopTimer = this.timingReporter.startTimer();
-        await this.saveInternal(notes);
+        const result = this.saveInternal(notes);
+        // ❗Another cheap operation added here (< 100 milliseconds)❗
+        await finalize(notes);
         stopTimer();
+        return result;
     }
 
-    // ❗Make compression asychronous by wrapping in a promise.❗
     async saveInternal(notes) {
-        // ❗A quick operation (< 100 milliseconds)❗
-        // ❗Makes sure this method is truly async❗
         await prepare(notes);
         return new Promise((resolve) => {
             compress(notes);

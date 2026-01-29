@@ -8,13 +8,12 @@ export class SetTimeoutNoteStore {
     }
 
     async save(notes) {
-        const stopTimer = this.timingReporter.startTimer(
-            "set-timeout-note-store-save"
-        );
+        const stopTimer = this.timingReporter.startTimer();
         if (this.saveTimerHandle) {
             clearTimeout(this.saveTimerHandle);
         }
         return new Promise((resolve) => {
+            // ❗Create a task instead of a micro-task❗
             this.saveTimerHandle = setTimeout(() => {
                 compress(notes);
                 this.saveTimerHandle = undefined;

@@ -7,9 +7,7 @@ export class InstantNoteStore {
     }
 
     async save(notes) {
-        const stopTimer = this.timingReporter.startTimer(
-            "instant-note-store-save"
-        );
+        const stopTimer = this.timingReporter.startTimer();
 
         return new Promise((resolve) => {
             // Delay update by a little bit to give UI indication that save is

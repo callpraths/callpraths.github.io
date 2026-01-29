@@ -27,3 +27,11 @@ export async function prepare(notes) {
         resolve();
     });
 }
+
+export async function finalize(notes) {
+    return new Promise(resolve => {
+        const start = new Date();
+        while (new Date() - start < 100) { }
+        resolve();
+    });
+}

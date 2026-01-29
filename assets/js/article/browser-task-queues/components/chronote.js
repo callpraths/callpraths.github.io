@@ -8,7 +8,7 @@ import { SetTimeoutNoteStore } from "../store/set-timeout-note-store.js";
 import { SetTimeoutByPartsNoteStore } from "../store/set-timeout-by-parts-note-store.js";
 import { AwaitedPromiseNoteStore } from "../store/awaited-promise-note-store.js";
 import { UnawaitedPromiseNoteStore } from "../store/unawaited-promise-note-store.js";
-import { UnawaitedUnmeasuredPromiseNoteStore } from "../store/unawaited-unmeasured-promise-note-store.js";
+import { UnawaitedFinalizedPromiseNoteStore } from "../store/unawaited-finalized-promise-note-store.js";
 import { InstantNoteStore } from "../store/instant-note-store.js";
 import { SyncNoteStore } from "../store/sync-note-store.js";
 
@@ -56,7 +56,7 @@ export class Chronote extends LitElement {
                     case "setTimeout":
                         this.noteStore = new SetTimeoutNoteStore(this);
                         break;
-                    case "setTimoutByParts":
+                    case "setTimeoutByParts":
                         this.noteStore = new SetTimeoutByPartsNoteStore(
                             this.parts ?? 1
                         );
@@ -67,8 +67,8 @@ export class Chronote extends LitElement {
                     case "unawaitedPromise":
                         this.noteStore = new UnawaitedPromiseNoteStore(this);
                         break;
-                    case "unawaitedUnmeasuredPromise":
-                        this.noteStore = new UnawaitedUnmeasuredPromiseNoteStore(this);
+                    case "unawaitedFinalizedPromise":
+                        this.noteStore = new UnawaitedFinalizedPromiseNoteStore(this);
                         break;
                 }
                 break;

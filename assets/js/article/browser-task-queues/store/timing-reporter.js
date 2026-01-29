@@ -3,7 +3,8 @@ export class TimingReporter {
         this.elem = elem;
     }
 
-    startTimer(tag) {
+    startTimer(tag_unused) {
+        const tag = "chronote-save"
         const startTag = `${tag}--start`;
         const stopTag = `${tag}--stop`;
         performance.mark(startTag);

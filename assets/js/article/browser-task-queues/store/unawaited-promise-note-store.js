@@ -7,16 +7,19 @@ export class UnawaitedPromiseNoteStore {
     }
 
     async save(notes) {
-        const stopTimer = this.timingReporter.startTimer(
-            "unawaited-promise-note-store-save"
-        );
-        const result = this.saveInternal();
+        const stopTimer = this.timingReporter.startTimer();
+        // ❗`saveInternal` returned a `Promise` that we did not `await`❗
+        const result = this.saveInternal(notes);
         stopTimer();
+        // ❗We still stopped the timer before returning❗
         return result;
     }
 
     async saveInternal(notes) {
         await prepare(notes);
-        compress(notes);
+        return new Promise((resolve) => {
+            compress(notes);
+            resolve();
+        });
     }
 }

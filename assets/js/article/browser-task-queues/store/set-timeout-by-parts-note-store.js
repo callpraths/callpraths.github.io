@@ -9,18 +9,18 @@ export class SetTimeoutByPartsNoteStore {
     }
 
     async save(notes) {
-        const stopTimer = this.timingReporter.startTimer(
-            "set-timeout-by-parts-note-store-save"
-        );
+        const stopTimer = this.timingReporter.startTimer();
         this.saveTimerHandles.forEach(
             (handle) => handle && clearTimeout(handle)
         );
         return new Promise(async resolve => {
             await Promise.all(
+                // ❗Preconfigured number of parts to split work into❗
                 [...Array(this.parts).keys()].map(
                     (i) =>
                         new Promise((resolve) => {
                             this.saveTimerHandles[i] = setTimeout(() => {
+                                // ❗Blocking, but quicker, compression of a part❗
                                 compressParts(notes, this.parts, i);
                                 this.saveTimerHandles[i] = undefined;
                                 resolve();
@@ -30,10 +30,7 @@ export class SetTimeoutByPartsNoteStore {
             );
             stopTimer();
             resolve();
-        })
-
-
-
+        });
     }
 }
 

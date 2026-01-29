@@ -8,9 +8,8 @@ export class SyncNoteStore {
     }
 
     save(notes) {
-        const stopTimer = this.timingReporter.startTimer(
-            "sync-note-store-save"
-        );
+        const stopTimer = this.timingReporter.startTimer();
+        // ❗Text compression in our example takes ~4 seconds 😲
         compress(notes);
         stopTimer();
     }
