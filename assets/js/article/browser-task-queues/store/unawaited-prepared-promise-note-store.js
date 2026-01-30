@@ -1,7 +1,7 @@
 import { TimingReporter } from "./timing-reporter.js";
-import { compress, prepare, finalize } from "./common.js";
+import { compress, prepare } from "./common.js";
 
-export class UnawaitedFinalizedPromiseNoteStore {
+export class UnawaitedPreparedPromiseNoteStore {
     constructor(elem) {
         this.timingReporter = new TimingReporter(elem);
     }
@@ -9,13 +9,12 @@ export class UnawaitedFinalizedPromiseNoteStore {
     async save(notes) {
         const stopTimer = this.timingReporter.startTimer();
         const result = this.saveInternal(notes);
-        // ❗Another quick operation (< 100 milliseconds)❗
-        await finalize(notes);
         stopTimer();
         return result;
     }
 
     async saveInternal(notes) {
+        // ❗A quick operation (< 100 milliseconds)❗
         await prepare(notes);
         return new Promise((resolve) => {
             compress(notes);
