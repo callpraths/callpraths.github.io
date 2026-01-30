@@ -5,10 +5,10 @@ import {
 } from "https://cdn.jsdelivr.net/gh/lit/dist@2/core/lit-core.min.js";
 
 // Usage:
-// <x-chronote-with-latency>
+// <x-chronote-container>
 //   <xchronote ...></chronote>
-// </x-chronote-with-latency>
-export class ChronoteWithLatency extends LitElement {
+// </x-chronote-container>
+export class ChronoteContainer extends LitElement {
     constructor() {
         super();
         this.childId = undefined;
@@ -16,6 +16,7 @@ export class ChronoteWithLatency extends LitElement {
 
     static get properties() {
         return {
+            withLatency: { type: Boolean },
             childId: { type: String, state: true },
         };
     }
@@ -46,7 +47,7 @@ export class ChronoteWithLatency extends LitElement {
         return html`
             <div id="container">
                 <slot id="chronos-slot"></slot>
-                <x-chronote-latency target="${this.childId}"></x-chronote-latency>
+                ${this.withLatency ? html`<x-chronote-latency target="${this.childId}"></x-chronote-latency>` : html``}
             </div>`;
     }
 

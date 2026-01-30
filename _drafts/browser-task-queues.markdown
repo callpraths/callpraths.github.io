@@ -9,14 +9,14 @@ style: browser-task-queues
 
     TODO(prprabhu) - Introduction
 
-For the discussion here, I wrote a toy chronological notes taking widget - _Chronotes_. It's a simple web component[^1]
+For the discussion here, I wrote a toy chronological notes taking widget - _Chronotes_. It's a simple widget
 where you can take notes that are tagged with the time the note was taken. In addition to an input box for adding a note
 and a list of the saved notes, the widget contains a clock and progress indicator. These UI elements will help you notice
 the smoothness (or lack thereof) of UI updates in the examples below. Go ahead and try taking some Chronotes yourself!
 
-<div style="display: block; width: 20rem; height: 15rem">
+<x-chronote-container>
 <x-chronote id="xc-instant" store="instant"></x-chronote>
-</div>
+</x-chronote-container>
 
 As you can see above, when you add a new note, the progress indicator in the status bar flashes to show that the note
 is being saved. Once saved, the note appears in the notes list. Of course, saving a single line of text does not really
@@ -47,9 +47,9 @@ to go off of.
 
 Go ahead and play with the updated (worse) example:
 
-<x-chronote-with-latency>
+<x-chronote-container withLatency="true">
 <x-chronote id="xc-sync" store="sync"></x-chronote>
-</x-chronote-with-latency>
+</x-chronote-container>
 
 Notice that the example now displays the latency of the last note addition under the Chronotes app, as reported to Perry's latency dashboard. As you play around with Chronotes above, you'll notice several problems when you add a note:
 
@@ -90,9 +90,9 @@ A lot has changed in the code listing, so let's break it down:
 Think about what the effect of this change will be and then play around with the updated widget below to see if your
 intution is on point.
 
-<x-chronote-with-latency>
+<x-chronote-container withLatency="true">
 <x-chronote id="xc-awaited-promise" store="awaitedPromise"></x-chronote>
-</x-chronote-with-latency>
+</x-chronote-container>
 
 No change!
 
@@ -130,9 +130,9 @@ The change here is smaller. The `Promise` returned from `saveInternal()` is no
 longer `await`ed. The timer is still stopped at the same point in the body of `save()`.
 That will fix things, right? Try it out for yourself:
 
-<x-chronote-with-latency>
+<x-chronote-container withLatency="true">
 <x-chronote id="xc-unawaited-promise" store="unawaitedPromise"></x-chronote>
-</x-chronote-with-latency>
+</x-chronote-container>
 
 Still no change!
 
@@ -176,9 +176,9 @@ async saveInternal(notes) {
 The only change here is the new `await prepare(notes)` call, which takes less than 100 milliseconds to complete.
 Let's see what happens when we try this out:
 
-<x-chronote-with-latency>
+<x-chronote-container withLatency="true">
 <x-chronote id="xc-unawaited-prepared-promise" store="unawaitedPreparedPromise"></x-chronote>
-</x-chronote-with-latency>
+</x-chronote-container>
 
 Yay! Reported latency is now closer to 100 milliseconds (the time spent in `prepare()`) which isn't as bad as...
 wait, the UI is _still frozen_ for 4 seconds. In any case, there's no way doing _more_ work can make things go _faster_, right?
@@ -209,9 +209,9 @@ async saveInternal(notes) {
 The only change is an additional fast `finalize()` step after the notes are saved but before the timer is stopped.
 Let's see if that made any difference at all:
 
-<x-chronote-with-latency>
+<x-chronote-container withLatency="true">
 <x-chronote id="xc-unawaited-finalized-promise" store="unawaitedFinalizedPromise"></x-chronote>
-</x-chronote-with-latency>
+</x-chronote-container>
 
 And... the latency is back to 4 seconds!
 
@@ -272,9 +272,9 @@ async save(notes) {
 
 And here's the result:
 
-<x-chronote-with-latency>
+<x-chronote-container withLatency="true">
 <x-chronote id="xc-set-timeout-promise" store="setTimeout"></x-chronote>
-</x-chronote-with-latency>
+</x-chronote-container>
 
 So... mostly the same, but worse? The note now appears immedately on save, but the UI is frozen right after (both the
 timer and the saving animation freeze after the note appears in the list).
@@ -327,9 +327,9 @@ to paint between the scheduled tasks. The browser guarantees that the created ta
 
 Give Perry's final solution a spin:
 
-<x-chronote-with-latency>
+<x-chronote-container withLatency="true">
 <x-chronote id="xc-set-timeout-by-parts-promise" store="setTimeoutByParts" parts=50></x-chronote>
-</x-chronote-with-latency>
+</x-chronote-container>
 
 Isn't that a beauty? The note appears in the list immediately, the clock and animation run smoothly while the compression is
 in progress, and the reported latency of the overall compression is accurate - over 4 seconds because splitting up the
@@ -360,4 +360,3 @@ magical framework for web UI. I think [`Vue`] is a saner choice. Or, you can go 
 [browser main thread]: https://developer.mozilla.org/en-US/docs/Glossary/Main_thread
 [_web worker_]: https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API
 [cooperative multi-tasking]: https://en.wikipedia.org/wiki/Cooperative_multitasking
-[^1]: TODO(prprabhu) Footnote about web component.
