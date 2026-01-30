@@ -47,7 +47,7 @@ to go off of.
 
 Go ahead and play with the updated (worse) example:
 
-<x-chronote-container withLatency="true">
+<x-chronote-container withLatency="true" withTraceViewer="true">
 <x-chronote id="xc-sync" store="sync"></x-chronote>
 </x-chronote-container>
 

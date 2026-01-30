@@ -8,6 +8,7 @@ import { ChronoteEditor } from "./components/chronote-editor.js";
 import { ChronoteClock } from "./components/chronote-clock.js";
 import { ChronoteLatency } from "./components/chronote-latency.js";
 import { ChronoteContainer } from "./components/chronote-container.js";
+import { ChronoteTraceViewer } from "./components/chronote-trace-viewer.js";
 
 function defineComponents() {
   window.customElements.define("x-chronote-status", ChronoteStatus);
@@ -19,6 +20,7 @@ function defineComponents() {
   window.customElements.define("x-chronote", Chronote);
   window.customElements.define("x-chronote-container", ChronoteContainer);
   window.customElements.define("x-chronote-latency", ChronoteLatency);
+  window.customElements.define("x-chronote-trace-viewer", ChronoteTraceViewer);
 }
 
 defineComponents();
