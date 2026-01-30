@@ -99,11 +99,49 @@ intution is on point.
 </x-chronote-with-latency>
 
 No change. This is not truly surprising: simply making an operation asynchronous makes no difference since `save()` still
-waits for the comporession to complete.
+waits for the comporession to complete. But this is a good place to take a look at what really happens when the asynchronous
+code executes. In JavaScript, asynchronous operations are implemented via first-in-firt-out task queues. Remember that
+the main thread, where the JavaScript is executing, is a single thread. When the JavaScript execution hits an `await` statement
+that needs to wait for a `Promise` that is yet to resolve (i.e. the results of the `Promise` are not yet available), the
+browser packages up the remaining code that depends on the yet-to-be-available result into a _task_ and puts it in a queue.
+Execution then continues from the oldest such task in the queue that hasn't yet run. The first-in-first-out nature of the
+queue ensures that by the time the pending task gets a chance to execute, the `Promise` will have resolved and returned a result.
 
-    TODO(prprabhu) Introduce microtask queue, but as a task queue.
+When the code in the above listing executes, the order in which tasks are created and put in the task queue are as follows:
+
+
+<x-tq-container>
+    <x-tq-task type="javascript-execution">
+        // function::save()
+        const stopTimer = this.timingReporter.startTimer();
+        await this.saveInternal(notes); // ❗ unresolved promise.
+    </x-tq-task>
+    <x-tq-task type="javascript-execution">
+         // function::saveInternal()
+         await prepare(notes); // ❗ unresolved promise.
+    </x-tq-task>
+    <x-tq-task type="javascript-execution">
+        // function::saveInernal()
+        return new Promise((resolve) => {...);
+        // function::saveInternal::Promise
+        // ❗There is no unresolved await, so the body of the promise executes.
+        compress(notes); // ⚠️ ~4 seconds
+        resolve();
+        // function::save()
+        stopTimer();
+    </x-tq-task>
+    <x-tq-task type="browser-paint">
+    </x-tq-task>
+</x-tq-container>
+
+Here we can see that `stopTimer()` is called in the third task, after `compress()`.
+The last task `browser-paint` is a special task that uses the same queue to give the browser a chance to update
+the UI. The JavaScript tasks are generated and put on the queue as soon as JavaScript hits an unresolved `Promise`.
+The browser never gets a chance to queue a `browser-paint` task in-between, thus the browser UI update is also blocked
+behind the costly task that contains the `compress()` call. This is why the UI freezes.
 
 OK... so Perry thinks their best bet is to _no longer_ `await` the compression step.
+This _should_ avoid creating a new task off of the first task in the queue above as there is no unresolved `Promise` being `await`ed.
 
 <p>
 {% highlight jsx linenos %}
@@ -139,36 +177,38 @@ Wait. The UI is _still frozen_ for 4 seconds.
 
 What's up? The reduction in the measured latency is easy to explain - we now stop the timer before the `saveInternal` `Promise` is `await`ed, so the time spent inside `saveInternal` is no longer measured. But why is the UI still frozen?
 
-    TODO(prprabhu) Introduce task queue vs. micro task queue.
-    Tip: Leaked promises are scary - you may not measure what you think you measure.
-
+Enter, the micro-task queue. I fudged the facts in my description of task queues above. The browser execution model actually contains two nested queues - unresolved JavaScript `Promises` are put in a _micro-task queue_. This entire queue comprises a single task on the _task queue_ we described before. Thus, a _JavaScript execution_ task completes only when all the JavaScript micro-tasks that are put in the queue have completed. Only then can any other task, including the browser UI paint task, can run. Our un`await`ed code looks as follows in the new nested-queues execution model:
 
 <x-tq-container>
     <x-tq-task type="javascript-execution-queue">
         <x-tq-micro-task>
-            async save(notes) {
-                const stopTimer = this.timingReporter.startTimer();
-                // ❗`saveInternal` returned a `Promise` that we did not `await`❗
-                const result = this.saveInternal(notes);
-                stopTimer();
-                // ❗We still stopped the timer before returning❗
-                return result;
-            }
+            // function::save()
+            const stopTimer = this.timingReporter.startTimer();
+            // ❗No `await`, so this does not create a new micro-task.
+            const result = this.saveInternal(notes);
+            // function::saveInternal()
+            // ❗`await`, so this creates a new microtask.
+            await prepare(notes);
+            // ❗But remember that save() does not await anything, so execution continues.
+            // function::save()
+            stopTimer();
+            return result;
         </x-tq-micro-task>
         <x-tq-micro-task>
-            async saveInternal(notes) {
-                await prepare(notes);
-                return new Promise((resolve) => {
-                    compress(notes);
-                    resolve();
-                });
-            }
+            // function::saveInternal()
+            return new Promise(...)
+            // function::saveInternal::Promise
+            // ❗There is no unresolved await, so the body of the promise executes.
+            compress(notes); // ⚠️ ~4 seconds
+            resolve();
         </x-tq-micro-task>
     </x-tq-task>
     <x-tq-task type="browser-paint">
     </x-tq-task>
 </x-tq-container>
 
+The first and the last micro-tasks here are most relevant. In the first task, `stopTimer()` is called before
+any of the awaited promises resolve. This is why our latency reporting is broken. In the last micro-task, `compress()` is called, yet again before the browser is able to update the UI. As mentioned above, the JavaScript micro-task queue must be emptied of all posted `Promise`s, even if there is nothing `await`ing them before the next task on the parent task queue can be scheduled. This is why the browser still gets no chance to update the UI before the costly `compress()` operation can complete.
 
 You may think that this example is made up and you would never make the mistake of leaking a `Promise` like that if you
 were in Perry's place. Well then, know that this example ain't made up. The sequence of events we're walking through
@@ -203,7 +243,40 @@ We do not expect any difference to the UI freeze bug due to this change. But wha
 
 Instead of rising by ~100 milliseconds to account for the extra operation, latency jumps back to over 4 seconds! Somehow... the micro-task that contains the call to `stopTimer()` is now once again running after the micro-task with the call to `compress()`. Let's look at our micro-task queue again to understand why:
 
-    TODO(prprabhu) - learning: Promises are greedy.
+<x-tq-container>
+    <x-tq-task type="javascript-execution-queue">
+        <x-tq-micro-task>
+            // function::save()
+            const stopTimer = this.timingReporter.startTimer();
+            // ❗No `await`, so this does not create a new micro-task.
+            const result = this.saveInternal(notes);
+            // function::saveInternal()
+            // ❗`await`, so this creates a new microtask.
+            await prepare(notes);
+            // ❗But remember that save() does not await anything, so execution continues.
+            // function::save()
+            // ❗`await`, so this creates a new microtask. save() must now suspend
+            await finalize(notes)
+        </x-tq-micro-task>
+        <x-tq-micro-task>
+            // function::saveInternal()
+            return new Promise(...)
+            // function::saveInternal::Promise
+            // ❗There is no unresolved await, so the body of the promise executes.
+            compress(notes); // ⚠️ ~4 seconds
+            resolve();
+        </x-tq-micro-task>
+        <x-tq-micro-task>
+            // function::save()
+            stopTimer()
+            return result;
+        </x-tq-micro-task>
+    </x-tq-task>
+    <x-tq-task type="browser-paint">
+    </x-tq-task>
+</x-tq-container>
+
+The extra `await` point added to `save()` due to the call to `finalize()` led to a new micro-task getting created for the last two statements in the function. Worse, this happened _after_ the micro-task inside `saveIneternal` due to the `await` for `prepare()` was posted. Thus, the costly micro-task posted from `saveInternal()` now once again runs before the last part of `save()` that stops the timer. There is an intricate ordering of the micro-tasks in the micro-task queue that depends on the length of the chain of suspended promises in the code-paths that determines whether `stopTimer()` or `compress()` gets to execute first. As the code evolves, the latency measurement is liable to flip-flop between including the costly computation or missing it.
 
 Once again, this situation is not theoretical. A similar change (with several layers of abstractions and interveaning teams involved) was shipped in my production chat app, leading to general confusion and several hours of meeting time getting folks to agree on
 there being a problem in the first place. My situation was even worse: There were two different latency measurements being reported
@@ -251,9 +324,36 @@ My hopes are not high that this will help. Try it out anyways:
 So... mostly the same, but worse? The note now appears immedately on save, but the UI is frozen right after (both the
 timer and the saving animation freeze after the note appears in the list). Creating a new task only moved the costly work
 around. Yes, it did give the browser a chance to paint the screen - once - and that is why the note appeared in the saved
-list. But the 4 second compression operation ran right after and froze the UI all over again:
+list. But the 4 second compression operation ran right after and froze the UI all over again (blocking the second `browser-paint` task below):
 
-    TODO(prprabhu) New tasks view.
+<x-tq-container>
+    <x-tq-task type="javascript-execution-queue">
+        <x-tq-micro-task>
+            const stopTimer = this.timingReporter.startTimer();
+            if (this.saveTimerHandle) {
+                clearTimeout(this.saveTimerHandle);
+            }
+            return new Promise((resolve) => {
+                // ❗Body of setTimeout does not execute in this task at all.
+                this.saveTimerHandle = setTimeout(() => {
+                    ...
+                }, 0);
+            });
+        </x-tq-micro-task>
+    </x-tq-task>
+    <x-tq-task type="browser-paint">
+    </x-tq-task>
+    <x-tq-task type="javascript-execution-queue">
+        <x-tq-micro-task>
+            compress(notes); // ⚠️ ~4 seconds
+            this.saveTimerHandle = undefined;
+            stopTimer();
+            resolve();
+        </x-tq-micro-task>
+    </x-tq-task>
+    <x-tq-task type="browser-paint">
+    </x-tq-task>
+</x-tq-container>
 
 Finally, Perry realises that there is no quick fix. If there is a 4 seconds-long operation on the UI thread, the UI thread
 must freeze for 4 seconds. There's no point moving that work around in the micro-task queue or task queue. Perry has only
