@@ -98,7 +98,7 @@ intution is on point.
 <x-chronote id="xc-awaited-promise" store="awaitedPromise"></x-chronote>
 </x-chronote-with-latency>
 
-No change. This is not surprising: simply making an operation asynchronous makes no difference since `save()` still
+No change. This is not truly surprising: simply making an operation asynchronous makes no difference since `save()` still
 waits for the comporession to complete.
 
     TODO(prprabhu) Introduce microtask queue, but as a task queue.
@@ -164,21 +164,6 @@ What's up? The reduction in the measured latency is easy to explain - we now sto
                 });
             }
         </x-tq-micro-task>
-    </x-tq-task>
-    <x-tq-task type="browser-paint">
-    </x-tq-task>
-</x-tq-container>
-
-<x-tq-container>
-    <x-tq-task type="javascript-execution">
-        async save(notes) {
-            const stopTimer = this.timingReporter.startTimer();
-            // ❗`saveInternal` returned a `Promise` that we did not `await`❗
-            const result = this.saveInternal(notes);
-            stopTimer();
-            // ❗We still stopped the timer before returning❗
-            return result;
-        }
     </x-tq-task>
     <x-tq-task type="browser-paint">
     </x-tq-task>
