@@ -7,19 +7,24 @@ import {
 export class ChronoteLayout extends LitElement {
   static get styles() {
     return css`
+          :host {
+            display: block;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+          }
           #container {
             display: flex;
             flex-direction: column;
             gap: 0.25rem;
-            min-width: 20rem;
-            min-height: 15rem;
-            width: 20rem;
-            height: 15rem;
+            width: 100%;
+            height: 100%;
             padding: 0.5rem;
             border-width: 0.0625rem;
             border-radius: 0.25rem;
             border-color: #aaaaaa;
             border-style: solid;
+            box-sizing: border-box;
           }
           #header {
             background: #ffffff;

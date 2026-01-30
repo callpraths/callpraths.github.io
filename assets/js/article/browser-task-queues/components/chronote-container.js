@@ -16,7 +16,7 @@ export class ChronoteContainer extends LitElement {
 
     static get properties() {
         return {
-            withLatency: { type: Boolean },
+            withLatency: { type: Boolean, reflect: true },
             childId: { type: String, state: true },
         };
     }
@@ -32,13 +32,28 @@ export class ChronoteContainer extends LitElement {
             padding: 0.5rem;
             gap: 0.25rem;
             align-items: center;
+            box-sizing: border-box;
           }
           #chronos-slot {
             flex: 1;
+            width: 100%;
+            display: block;
+            box-sizing: border-box;
+          }
+          ::slotted(*) {
+            width: 100%;
+            height: 100%;
+            display: block;
+            box-sizing: border-box;
           }
           :host {
             display: block;
-            width: fit-content;
+            width: 20rem;
+            height: 15rem;
+            box-sizing: border-box;
+          }
+          :host([withLatency]) {
+            height: 17rem;
           }
         `;
     }
