@@ -1,34 +1,38 @@
 import {
-    LitElement,
-    css,
-    html,
+  LitElement,
+  css,
+  html,
 } from "https://cdn.jsdelivr.net/gh/lit/dist@2/core/lit-core.min.js";
 
 export class ChronoteTraceViewer extends LitElement {
-    static get properties() {
-        return {
-            collapsed: { type: Boolean, reflect: true, attribute: "collapsed" },
-        };
-    }
+  static get properties() {
+    return {
+      target: { type: String },
+      collapsed: { type: Boolean, reflect: true, attribute: "collapsed" },
+      logLength: { type: Number, state: true },
+    };
+  }
 
-    constructor() {
-        super();
-        this.collapsed = true;
-    }
+  constructor() {
+    super();
+    this.log = [];
+    this.collapsed = true;
+    this.logLength = 0;
+  }
 
-    toggle() {
-        this.collapsed = !this.collapsed;
-        this.dispatchEvent(
-            new CustomEvent("toggle", {
-                detail: { collapsed: this.collapsed },
-                bubbles: true,
-                composed: true,
-            })
-        );
-    }
+  toggle() {
+    this.collapsed = !this.collapsed;
+    this.dispatchEvent(
+      new CustomEvent("toggle", {
+        detail: { collapsed: this.collapsed },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
 
-    static get styles() {
-        return css`
+  static get styles() {
+    return css`
       :host {
         display: flex;
         flex-direction: column;
@@ -90,10 +94,28 @@ export class ChronoteTraceViewer extends LitElement {
 
       #content {
         margin-left: 2rem;
-        margin-top: -2rem; /* Pull up to align with header/title area visually if needed, or just let flex flow */
+        margin-top: -2rem;
         padding: 0.5rem;
         display: none;
         flex: 1;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #ffffff transparent;
+      }
+
+      #content::-webkit-scrollbar {
+        width: 0.5rem;
+      }
+
+      #content::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      #content::-webkit-scrollbar-thumb {
+        background-color: #ffffff;
+        border-radius: 0.25rem;
+        border: 2px solid transparent;
+        background-clip: content-box;
       }
 
       :host(:not([collapsed])) #content {
@@ -120,10 +142,11 @@ export class ChronoteTraceViewer extends LitElement {
         color: #ddd;
       }
     `;
-    }
+  }
 
-    render() {
-        return html`
+  render() {
+    this.maybeUpdateEventListener();
+    return html`
       <div id="header">
         <button @click="${this.toggle}">
           ${this.collapsed ? "+" : "-"}
@@ -131,12 +154,51 @@ export class ChronoteTraceViewer extends LitElement {
         <div id="title">Trace Viewer</div>
       </div>
       <div id="content">
-        <p>Trace Viewer Content</p>
-        <p>Here are some details.</p>
-        <p>Showing captured traces.</p>
-        <p>More information here.</p>
-        <p>End of sample text.</p>
+        ${this.renderContent()}
       </div>
     `;
+  }
+
+  renderContent() {
+    if (this.logLength === 0) {
+      return html`<p>No traces captured yet.</p>`;
     }
+    return html`
+      ${this.log.map((log) => html`<p>${log}</p>`)}
+    `;
+  }
+
+  maybeUpdateEventListener() {
+    if (this.target === this.oldTarget) {
+      return;
+    }
+    if (this.oldTarget) {
+      const target = document.getElementById(this.oldTarget);
+      if (target) {
+        target.remoteEventListener("trace-log", (ev) => {
+          const { log } = ev.detail;
+          this.log.push(log);
+          this.logLength = this.log.length;
+        });
+        target.remoteEventListener("trace-new", (ev) => {
+          this.log = [];
+          this.logLength = 0;
+        });
+      }
+    }
+
+    const target = document.getElementById(this.target);
+    if (target) {
+      target.addEventListener("trace-log", (ev) => {
+        const { log } = ev.detail;
+        this.log.push(log);
+        this.logLength = this.log.length;
+      });
+      target.addEventListener("trace-new", (ev) => {
+        this.log = [];
+        this.logLength = 0;
+      });
+    }
+    this.oldTarget = this.target;
+  }
 }

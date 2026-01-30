@@ -100,7 +100,7 @@ export class ChronoteContainer extends LitElement {
                     <div id="chronote-column">
                         ${chronoteContent}
                     </div>
-                    <x-chronote-trace-viewer></x-chronote-trace-viewer>
+                    <x-chronote-trace-viewer target="${this.childId}"></x-chronote-trace-viewer>
                 </div>
             `;
         }

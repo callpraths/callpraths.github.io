@@ -47,7 +47,7 @@ to go off of.
 
 Go ahead and play with the updated (worse) example:
 
-<x-chronote-container withLatency="true" withTraceViewer="true">
+<x-chronote-container withLatency="true">
 <x-chronote id="xc-sync" store="sync"></x-chronote>
 </x-chronote-container>
 
@@ -130,16 +130,14 @@ The change here is smaller. The `Promise` returned from `saveInternal()` is no
 longer `await`ed. The timer is still stopped at the same point in the body of `save()`.
 That will fix things, right? Try it out for yourself:
 
-<x-chronote-container withLatency="true">
+<x-chronote-container withLatency="true" withTraceViewer="true">
 <x-chronote id="xc-unawaited-promise" store="unawaitedPromise"></x-chronote>
 </x-chronote-container>
 
 Still no change!
 
 Hmm... what gives? Let's take a look at the order in which the different statements are executed when `save()` is called.
-Open the new panel on the right side of the Chronotes widget above and add a note to see a trace of the statements in the `save()` method.
-
-    TODO(prprabhu): Add a trace viewer to Chronotes.
+Open the new _Trace Viewer_ panel on the right side of the Chronotes widget above and add a note to see a trace of the statements in the `save()` method.
 
 As we'd expect from the observed behavior, the `compress()` method is called before both (a) the `stopTimer()` method is called and (b) the `save()` method returns.
 The key insight is that the `Promise` returned by `saveInternal()` _executes immediately and synchronously_ before the execution in `save()` continues beyond line 4 even though there is no `await` on line 4.
@@ -148,8 +146,7 @@ This is because `Promise`s in JavaScript are _greedy_ in the sense that their ex
 > 📌 `Promise`s (or equivalently, `async` functions) in JavaScript are not a reliable way to defer or delay execution of code.
 
 
-In Perry's world, disaster strikes while Perry is still scratching his head about what is going on.
-Perry's latency dashboard start showing some weird results as his teammates continue to make changes to the code.
+Further disaster strikes over in Perry's world, while he is still scratching his head about what is going on. Perry's latency dashboard start showing some weird results as his teammates continue to make changes to the code.
 
 First, a teammates adds some quick preparation code that runs before the compression code, like so:
 
@@ -176,7 +173,7 @@ async saveInternal(notes) {
 The only change here is the new `await prepare(notes)` call, which takes less than 100 milliseconds to complete.
 Let's see what happens when we try this out:
 
-<x-chronote-container withLatency="true">
+<x-chronote-container withLatency="true" withTraceViewer="true">
 <x-chronote id="xc-unawaited-prepared-promise" store="unawaitedPreparedPromise"></x-chronote>
 </x-chronote-container>
 
@@ -209,7 +206,7 @@ async saveInternal(notes) {
 The only change is an additional fast `finalize()` step after the notes are saved but before the timer is stopped.
 Let's see if that made any difference at all:
 
-<x-chronote-container withLatency="true">
+<x-chronote-container withLatency="true" withTraceViewer="true">
 <x-chronote id="xc-unawaited-finalized-promise" store="unawaitedFinalizedPromise"></x-chronote>
 </x-chronote-container>
 
@@ -217,7 +214,9 @@ And... the latency is back to 4 seconds!
 
 Perry is now completely lost. The UI freeze bug refuses to go away, and that's understandable as he hasn't gotten a chance to address it. But his latency dashboards are no longer reliable. Unrelated changes seem to be affecting the reported latency in unpredictable ways. Before we dig into why that's happening, try out the tracing panels in the Chronotes widgets above to see if you can get an intuition about what's going on.
 
-You will see that the order in which `compress()` and `stopTimer()` are called is different in the two cases. This has to do with how the JavaScript engine schedules pending work in the presense of `Promise`s. Instead of going into the details of how the execution engine works, let's take a look at _what_ the effect is. The listing below shows ...
+You will see that the order in which `compress()` and `stopTimer()` are called is different in the two cases. With only the `prepare()` call, compression is called at the end, after the timer is stopped and `save()` has already returned. With the addition of `finalize()`, compression moves earlier once again.
+
+This has to do with how the JavaScript engine schedules pending work in the presense of `Promise`s. Instead of going into the details of how the execution engine works, let's take a look at _what_ the effect is. The listing below shows ...
 
     TODO(prprabhu) Promise chaine example.
 
@@ -272,7 +271,7 @@ async save(notes) {
 
 And here's the result:
 
-<x-chronote-container withLatency="true">
+<x-chronote-container withLatency="true" withTraceViewer="true">
 <x-chronote id="xc-set-timeout-promise" store="setTimeout"></x-chronote>
 </x-chronote-container>
 
@@ -281,7 +280,7 @@ timer and the saving animation freeze after the note appears in the list).
 
 Can you guess why?
 Creating a new task only delayed the costly work. Yes, it did give the browser a chance to paint the screen - once - and that is why the note appeared in the saved
-list. But the 4 second compression operation ran right after the timeout expired and froze the UI all over again.
+list. But the 4 second compression operation ran right after the timeout expired and froze the UI all over again. You can see the effect of this also in the trace viewer above - the log line `Returning from save()` appears before the UI freezes. The remaining logs appear 4 seconds later, after compression is completed.
 
 Finally, Perry realises that there is no quick fix. _If there is a 4 seconds-long operation on the UI thread, the UI thread
 must freeze for 4 seconds_. There's no point moving that work around in the micro-task queue or task queue. Perry has only
@@ -327,7 +326,7 @@ to paint between the scheduled tasks. The browser guarantees that the created ta
 
 Give Perry's final solution a spin:
 
-<x-chronote-container withLatency="true">
+<x-chronote-container withLatency="true" withTraceViewer="true">
 <x-chronote id="xc-set-timeout-by-parts-promise" store="setTimeoutByParts" parts=50></x-chronote>
 </x-chronote-container>
 
