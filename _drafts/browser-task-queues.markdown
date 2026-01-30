@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Browser task queues"
-date:   2026-01-28 00:00:00 +0000
+date:   2026-01-30 00:00:00 +0000
 style: browser-task-queues
 ---
 
@@ -141,6 +141,48 @@ What's up? The reduction in the measured latency is easy to explain - we now sto
 
     TODO(prprabhu) Introduce task queue vs. micro task queue.
     Tip: Leaked promises are scary - you may not measure what you think you measure.
+
+
+<x-tq-container>
+    <x-tq-task type="javascript-execution-queue">
+        <x-tq-micro-task>
+            async save(notes) {
+                const stopTimer = this.timingReporter.startTimer();
+                // ❗`saveInternal` returned a `Promise` that we did not `await`❗
+                const result = this.saveInternal(notes);
+                stopTimer();
+                // ❗We still stopped the timer before returning❗
+                return result;
+            }
+        </x-tq-micro-task>
+        <x-tq-micro-task>
+            async saveInternal(notes) {
+                await prepare(notes);
+                return new Promise((resolve) => {
+                    compress(notes);
+                    resolve();
+                });
+            }
+        </x-tq-micro-task>
+    </x-tq-task>
+    <x-tq-task type="browser-paint">
+    </x-tq-task>
+</x-tq-container>
+
+<x-tq-container>
+    <x-tq-task type="javascript-execution">
+        async save(notes) {
+            const stopTimer = this.timingReporter.startTimer();
+            // ❗`saveInternal` returned a `Promise` that we did not `await`❗
+            const result = this.saveInternal(notes);
+            stopTimer();
+            // ❗We still stopped the timer before returning❗
+            return result;
+        }
+    </x-tq-task>
+    <x-tq-task type="browser-paint">
+    </x-tq-task>
+</x-tq-container>
 
 
 You may think that this example is made up and you would never make the mistake of leaking a `Promise` like that if you
