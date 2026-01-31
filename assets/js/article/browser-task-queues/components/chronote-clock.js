@@ -25,7 +25,7 @@ export class ChronoteClock extends LitElement {
     }
     connectedCallback() {
         super.connectedCallback();
-        this.timer = setInterval(this.tick.bind(this), 1000);
+        this.timer = setInterval(this.tick.bind(this), 100);
         this.tick();
     }
     disconnectedCallback() {
@@ -39,7 +39,7 @@ export class ChronoteClock extends LitElement {
     render() {
         return html`
           <div id="container">
-            ${this.now.getHours()}:${this.now.getMinutes()}:${this.now.getSeconds()}
+            ${this.now.getHours()}:${this.now.getMinutes()}:${this.now.getSeconds()}.${Math.floor(this.now.getMilliseconds() / 100)}
           </div>
         `;
     }

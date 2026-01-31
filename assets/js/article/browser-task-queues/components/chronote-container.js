@@ -68,11 +68,11 @@ export class ChronoteContainer extends LitElement {
           :host {
             display: block;
             width: 20rem;
-            height: 15rem;
+            height: 20rem;
             box-sizing: border-box;
           }
           :host([withLatency]) {
-            height: 17rem;
+            height: 22rem;
           }
           :host([withTraceViewer]) {
             width: 100%;

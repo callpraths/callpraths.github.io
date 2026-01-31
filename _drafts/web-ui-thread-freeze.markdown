@@ -1,15 +1,17 @@
 ---
 layout: post
-title:  "Browser task queues"
+title:  "Four ways to freeze the UI thread"
 date:   2026-01-30 00:00:00 +0000
 style: browser-task-queues
 ---
 
 <script type="module" src="{{ '/assets/js/article/browser-task-queues/main.js' | relative_url }}"></script>
 
-    TODO(prprabhu) - Introduction
+... and remedies for the morning after.
 
-For the discussion here, I wrote a toy chronological notes taking widget - _Chronotes_. It's a simple widget
+A frozen UI thread is one of the constant nightmares of application builders, regardless of the underlying platform and UI framework. Platform developers at [Android](android-jank) and [Chromium browser](chromium-jank) have been trying to make it easier for application developers to detect and mitigate jank for years. Jank can occure in the platform (chromium doing something slow) or in the application itself. This post walks you through all the ways you, as a web application developer, can make your own application janky, and what to do about it.
+
+For this discussion, I wanted to be able to walk through the pitfalls step-by-step, with a way for you, the reader, to interactively build an intuition for the problem at each step. To help this be an interactive post, I have written a toy chronological notes taking widget - _Chronotes_ that I'll use throughout so you can tinker with the ideas being discussed. `Chronotes_ is a simple widget
 where you can take notes that are tagged with the time the note was taken. In addition to an input box for adding a note
 and a list of the saved notes, the widget contains a clock and progress indicator. These UI elements will help you notice
 the smoothness (or lack thereof) of UI updates in the examples below. Go ahead and try taking some Chronotes yourself!
@@ -216,15 +218,53 @@ Perry is now completely lost. The UI freeze bug refuses to go away, and that's u
 
 You will see that the order in which `compress()` and `stopTimer()` are called is different in the two cases. With only the `prepare()` call, compression is called at the end, after the timer is stopped and `save()` has already returned. With the addition of `finalize()`, compression moves earlier once again.
 
-This has to do with how the JavaScript engine schedules pending work in the presense of `Promise`s. Instead of going into the details of how the execution engine works, let's take a look at _what_ the effect is. The listing below shows ...
+This has to do with how the JavaScript engine schedules pending work in the presense of `Promise`s. We saw earlier that JavaScript schedules `Promise`s greedily. We now see the opposite effect - while the execution of a `Promise` is greedy, an `await` point (or equivalently, the `.then()` clause of `Promise`) _always_ causes the rest of the current function to be deferred as a task to be picked up later. Javascript returns a new `Promise` from the current function immediately and picks up the deferred work only after the current function calls are complete. Thus, `saveInternal()` returned immedaitely from line 10, deferring the work from line 11 to 14 as a task. `save()` was then able to continue synchronously and stop the timer. The derferred task ran after `save()` had returned and incurred the 4 second cost of calling `compile()`. Thus, the execution order of the significant lines of code was:
 
-    TODO(prprabhu) Promise chaine example.
+<p>
+{% highlight jsx %}
+// call to save()
+2    const stopTimer = this.timingReporter.startTimer();
+3    const result = this.saveInternal(notes);
+// call to saveInternal()
+10   await prepare(notes);
+// suspended return from saveInternal()
+4    stopTimer();
+5    return result;
+// defered task from saveInternal
+11   return new Promise((resolve) => {
+12       compress(notes);
+13       resolve();
+14   });
+{% endhighlight %}
+</p>
 
-Thus, when there are un`await`ed `Promise`s, the interleaving of the associated `Promise` chain with other asynchronous operation depends on the length of the `Promise` chains. Beware that the `Promise` chains are likely to be created all over the codebase, and it is extremely difficult to reason about the execution order.
+Addition of `finalize()` had the opposite effect, but for the same reason. After `saveInternal` returned early from line 11, `save()` continued execution but it hit its own `await` point on line 5 after the call to `finalize()`. Thus, the rest of `save()` was also deferred, queueing behind the already deferred task from `saveInternal`. Thus the tail end of `save()` ran as a second deferred task, after the deferred task from `saveInternal()` that contained the `compress()` call. The new execution order looked like:
+
+<p>
+{% highlight jsx %}
+// call to save()
+2    const stopTimer = this.timingReporter.startTimer();
+3    const result = this.saveInternal(notes);
+// call to saveInternal()
+11   await prepare(notes);
+// suspended return from saveInternal()
+5    await finalize(notes);
+// defered task from saveInternal
+12   return new Promise((resolve) => {
+13       compress(notes);
+14       resolve();
+15   });
+// deferred task from save();
+6    stopTimer();
+7    return result;
+{% endhighlight %}
+</p>
+
+Thus, when there are unawated Promises, the interleaving of the associated `Promise` chain with other asynchronous operation depends on the length of the `Promise` chains. Beware that the `Promise` chains are likely to be created all over the codebase, and it is extremely difficult to reason about the execution order.
 
 There is an important lesson here:
 
-> 📌 Avoid un`await`ed `Promise`s. They can cause subtle changes in the order of execution of asynchronous code with surprising impact on performance measurements.
+> 📌 Avoid unawaited Promises. They can cause subtle changes in the order of execution of asynchronous code with surprising impact on performance measurements.
 
 You may think that this example is made up and you would never make the mistake of leaking a `Promise` like that if you
 were in Perry's place. Well then, know that this example ain't made up. The sequence of events we're walking through
@@ -348,14 +388,37 @@ On the balance, after a few years working in the infrastructure team of a heavy-
 magical framework for web UI. I think [`Vue`] is a saner choice. Or, you can go full vanilla and drop down the the web platform
 (that's what the web was all about always, right?). I wrote `Chronotes` as a collection of [web components] using the light-weight [`Lit`] library from Google and load them as [ESM modules] - no transpilation, no bundler, no magic. See the source code on [this blog's repo][chronotes-repo]. I would recommend a similar approach for small to medium applications.
 
-[ESM modules]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
-[`Vue`]: https://vuejs.org/
-[web components]: https://developer.mozilla.org/en-US/docs/Web/API/Web_components
-[`Lit`]: https://lit.dev/
-[chronotes-repo]: https://github.com/callpraths/callpraths.github.io/tree/5ab23b81d3b3881186ee4ad43384f2f537104abf/assets/js/article/browser-task-queues/components
-[react-concurrent]: https://react.dev/blog/2022/03/29/react-v18#what-is-concurrent-react
-[React reconciliation]: https://callpraths.github.io/2022/03/30/react-reconciliation.html
-[*Perry*]: https://www.youtube.com/playlist?list=PLiv1IUQDVSNJVnAPrekpyc39isaJSzi1J
-[browser main thread]: https://developer.mozilla.org/en-US/docs/Glossary/Main_thread
+### Note on LLM usage
+
+I wrote the Chronotes app ~2 years ago when the idea of this post first occured to me, and then put it on ice. This was done without the use of LLMs because we were still in ~~the last century~~ 2024, and also because you don't learn if LLM does it all.
+Picking it up again I added a bunch of features, like the _trace viewer_ panel. I used LLMs heavily for this work. Feature development on an already opinionated codebase are where LLMs really shine. Also, I can't write CSS to save my life, so I let the LLMs spin on that (and spin it did a lot, even for tiny layout changes. LLMs are _not_ up to scratch on getting CSS layout right yet).
+
+The prose is all mine. I find even LLM-driven auto-complete in IDEs like [Google's Antigravity][antigravity] extremely distracting. Using an LLM to write my prose is out of the question - the whole point is for me to tell you a story. Having somebody (something?) else's voice in the middle does not help.
+
+I did use the good old AI without [any snake oil][ai-snake-oil], i.e. spell check / grammar correction in copy-editing heavily. Because why wouldn't I?
+
+## Conclusion
+
+As a web developer, you do not  often need to think about asynchronous JavaScript's execution model - and this is by design. But the [leaky abstraction] breaks when you have a chunk of CPU-heavy work occuring on the main thread. I find the browser's two-level task queueing archiecture fascinating, and undrestanding it is critical if you find yourself thinking about exactly what's happening when you kick off a Promise. As for that CPU-heavy workload, you really have three options in a web application:
+
+- Avoid CPU-heavy work. This is a web application right? Punt it to the backend / or don't do it at all.
+- Split it up into smaller chunks scheduled independently. This is what React 18's concurrent mode APIs do.
+- Push it onto a _web worker_ thread. This approach is natural for web applications that are naturally CPU-intensive, like [Google Earth] (on my laptop, it launches 16 web workers that guzzle up my CPUs).
+
 [_web worker_]: https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API
+[android-jank]: https://developer.android.com/studio/profile/jank-detection
+[antigravity]: https://antigravity.google/
+[chromium-jank]: https://www.chromium.org/developers/how-tos/trace-event-profiling-tool/anatomy-of-jank/
+[*Perry*]: https://www.youtube.com/playlist?list=PLiv1IUQDVSNJVnAPrekpyc39isaJSzi1J
+[`Lit`]: https://lit.dev/
+[`Vue`]: https://vuejs.org/
+[ai-snake-oil]: https://books.google.ca/books/about/AI_Snake_Oil.html?id=Mpbq0AEACAAJ&redir_esc=y
+[browser main thread]: https://developer.mozilla.org/en-US/docs/Glossary/Main_thread
+[chronotes-repo]: https://github.com/callpraths/callpraths.github.io/tree/5ab23b81d3b3881186ee4ad43384f2f537104abf/assets/js/article/browser-task-queues/components
 [cooperative multi-tasking]: https://en.wikipedia.org/wiki/Cooperative_multitasking
+[ESM modules]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
+[Google Earth]: https://earth.google.com/
+[leaky abstraction]: https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/
+[React reconciliation]: https://callpraths.github.io/2022/03/30/react-reconciliation.html
+[react-concurrent]: https://react.dev/blog/2022/03/29/react-v18#what-is-concurrent-react
+[web components]: https://developer.mozilla.org/en-US/docs/Web/API/Web_components
