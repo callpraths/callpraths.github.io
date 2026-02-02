@@ -176,11 +176,17 @@ export class ChronoteTraceViewer extends LitElement {
       const target = document.getElementById(this.oldTarget);
       if (target) {
         target.remoteEventListener("trace-log", (ev) => {
+          if (this.collapsed) {
+            return;
+          }
           const { log } = ev.detail;
           this.log.push(log);
           this.logLength = this.log.length;
         });
         target.remoteEventListener("trace-new", (ev) => {
+          if (this.collapsed) {
+            return;
+          }
           this.log = [];
           this.logLength = 0;
         });
@@ -190,11 +196,17 @@ export class ChronoteTraceViewer extends LitElement {
     const target = document.getElementById(this.target);
     if (target) {
       target.addEventListener("trace-log", (ev) => {
+        if (this.collapsed) {
+          return;
+        }
         const { log } = ev.detail;
         this.log.push(log);
         this.logLength = this.log.length;
       });
       target.addEventListener("trace-new", (ev) => {
+        if (this.collapsed) {
+          return;
+        }
         this.log = [];
         this.logLength = 0;
       });

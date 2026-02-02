@@ -1,4 +1,8 @@
-const TIME_TO_BLOCK_MS = 4000;
+// Use an odd number so that latency is visually different from the faster
+// `preapre` and `finalize` calls.
+const TIME_TO_BLOCK_MS = 1133;
+
+const PREP_FINALIZE_BLOCK_MS = 97;
 
 // "compress" the notes.
 //
@@ -23,7 +27,7 @@ export function compressParts(notes, parts, _i) {
 export async function prepare(notes) {
     return new Promise(resolve => {
         const start = new Date();
-        while (new Date() - start < 100) { }
+        while (new Date() - start < PREP_FINALIZE_BLOCK_MS) { }
         resolve();
     });
 }
@@ -31,7 +35,7 @@ export async function prepare(notes) {
 export async function finalize(notes) {
     return new Promise(resolve => {
         const start = new Date();
-        while (new Date() - start < 100) { }
+        while (new Date() - start < PREP_FINALIZE_BLOCK_MS) { }
         resolve();
     });
 }
