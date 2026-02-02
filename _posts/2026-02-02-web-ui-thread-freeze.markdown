@@ -31,7 +31,7 @@ being saved. Once saved, the note appears in the notes list.
 
 I invite you to temporarily suspend disbelief and follow along as I look over the shoulders of a fellow engineer,
 [*Perry*], as he muddles through some soon-to-be-janky UI. Of course, saving a single line of text is unlikely to cause
-any performance issues. To make things more interesting, we make Perry's life harder at the outset: Chronotes becomes
+any performance issues. To make things more interesting, let's make Perry's life harder at the outset: Chronotes becomes
 super popular (who wouldn't want one, eh?) and the amount of space taken by the notes grows to be too large. Perry
 solves this problem by compressing the notes before saving them. Here's what the method that saves the notes looks like
 after he adds compression:
@@ -40,7 +40,7 @@ after he adds compression:
 {% highlight jsx linenos %}
 save(notes) {
     const stopTimer = this.timingReporter.startTimer();
-    // ❗Text compression in our example takes ~4 seconds 😲❗
+    // ❗Text compression in our example takes nearly a second 😲❗
     compress(notes);
     stopTimer();
 }
@@ -151,7 +151,7 @@ Hmm... what gives? To understand why there is no change, let's take a look at th
 statements are executed when `save()` is called. Open the new _Trace Viewer_ panel on the right side of the
 Chronotes widget above and add another note to see a trace of the statements in the `save()` method.
 
-The trace shows log statements issued from various points in the code listing. As we'd expect from the observed
+The trace shows log statements issued from various points in the code listing. As you'd expect from the observed
 behavior, the `compress()` method is called before both (a) the `stopTimer()` method is called, and (b) the `save()`
 method returns.
 
@@ -237,7 +237,7 @@ At this point, Perry is completely lost. The UI freeze bug refuses to go away. T
 gotten a chance to address it. But his latency dashboards are no longer reliable. Unrelated changes seem to be affecting
 the reported latency in unpredictable ways.
 
-Before we dig into why that's happening, try out the tracing panels in the Chronotes widgets above to see if you can get
+Before I dig into why that's happening, try out the tracing panels in the Chronotes widgets above to see if you can get
 an intuition to help Perry out.
 
 You will see that the order in which `compress()` and `stopTimer()` are called is different in the two cases. With only
@@ -422,7 +422,7 @@ async save(notes) {
 {% endhighlight %}
 </p>
 
-That's a mouthful of code - but the intent is as we already discussed - Perry splits the work into a pre-configured
+That's a mouthful of code - but the intent is as already described - Perry splits the work into a pre-configured
 number of steps and schedules each part as a task. Once a part is compressed, the next part's compression is immediately
 scheduled, if there are any left. Had all the parts been scheduled at once, other `setTimeout` calls would have had to
 queue behind all 20 parts (e.g., this would block the Chronotes clock from updating because it uses `setTimeout`).
@@ -446,9 +446,9 @@ application runtime settings were updated. React took several seconds, burning a
 that nothing needed to be updated on the screen. It is my position that React makes it too easy for application
 developers to write huge applications that freeze as React figures out what part of the screen to update. React can't
 effectively offload this computation to a web worker because it's all about DOM updates. React 18 tries to mitigate this
-problem somewhat via [concurrent rendering][react-concurrent], which is essentially the same solution that we arrived at
-above - split up the costly rendering pass into interruptible chunks so that the browser (or the user!) can get a word
-in. I have written before about some of the performance gotchas in React in my post on [React reconciliation].
+problem somewhat via [concurrent rendering][react-concurrent], which is essentially the same solution that Perry arrived
+at above - split up the costly rendering pass into interruptible chunks so that the browser (or the user!) can get a
+word in. I have written before about some of the performance gotchas in React in my post on [React reconciliation].
 
 On balance, after a few years working in the infrastructure team of a heavyweight web application, I would reach
 for a less magical framework for web UI than React. I think [`Vue`] is a saner choice. Or, you can go full vanilla and
@@ -460,7 +460,7 @@ I would recommend a similar approach, at least for small to medium applications.
 ### Note on LLM usage
 
 I wrote the Chronotes app neraly 2 years ago when the idea of this post first occured to me. That was done without the
-use of LLMs because we were still in ~~the last century~~ 2024, and also because I wouldn't learn anything if LLM did
+use of LLMs because it was still ~~the last century~~ 2024, and also because I wouldn't learn anything if an LLM did
 it all. Picking it up again this year, I added a bunch of features, like the _trace viewer_ panel. I used LLMs heavily
 for this work. Feature development on an already opinionated codebase is where LLMs really shine. Finally, I can't write
 CSS to save my life, so I let the LLM spin on that.
