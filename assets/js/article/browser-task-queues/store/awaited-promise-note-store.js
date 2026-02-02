@@ -20,7 +20,7 @@ export class AwaitedPromiseNoteStore {
         this.traceLogger.log_called("Returning from save()");
     }
 
-    // ❗Make compression asychronous by wrapping in a promise.❗
+    // ❗Make compression asynchronous by wrapping in a promise.❗
     async saveInternal(notes) {
         return new Promise((resolve) => {
             compress(notes);
