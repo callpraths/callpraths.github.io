@@ -5,12 +5,12 @@ date:   2026-02-02 00:00:00 +0000
 style: browser-task-queues
 ---
 
-<script type="module" src="{{ '/assets/js/article/browser-task-queues/main.js' | relative_url }}"></script>
-
 ... and remedies for the morning after.
 
+<script type="module" src="{{ '/assets/js/article/browser-task-queues/main.js' | relative_url }}"></script>
+
 A frozen UI thread is one of the constant nightmares of application builders, regardless of the underlying platform and
-UI framework. For many years, platform developers at [Android](android-jank) and [the Chromium browser](chromium-jank)
+UI framework. For many years, platform developers at [Android][android-jank] and [the Chromium browser][chromium-jank]
 have been trying to make it easier for application developers to detect and mitigate jank. Jank can occur both in the
 platform (e.g., chromium did something slow) or in the application itself. This post walks you through some ways you, as
 a web application developer, could accidentally make your own application janky, and provides remedies.
@@ -467,8 +467,8 @@ CSS to save my life, so I let the LLM spin on that.
 
 The prose in this post is all mine. I find LLM-driven auto-complete in IDEs like [Google's Antigravity][antigravity]
 extremely distracting. Using an LLM to co-write my prose is out of the question - the whole point is for me to tell you
-a story. Having somebody (something?) else's voice in the middle does not help. I did use the good old AI without
-[any snake oil][ai-snake-oil], i.e., spell check / grammar correction, while copy-editing. Because why wouldn't I?
+a story. Having somebody (something?) else's voice in the middle does not help. I did use the good old [AI without
+any snake oil][ai-snake-oil], i.e., spell check / grammar correction, while copy-editing. Because why wouldn't I?
 
 ## Conclusion
 
