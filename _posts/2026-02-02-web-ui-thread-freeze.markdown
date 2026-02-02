@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Four ways to freeze the UI thread"
-date:   2026-01-30 00:00:00 +0000
+date:   2026-02-02 00:00:00 +0000
 style: browser-task-queues
 ---
 
